@@ -1,5 +1,4 @@
 import * as types from './Cart.type';
-import { editCart } from './middleCart';
 
 const innitialState = {
     Cart: [],
@@ -8,21 +7,25 @@ const innitialState = {
 
 export default function cartReducer(state = innitialState, action) {
     switch (action.type) {
+        case types.GET_CART:
+            return {
+                ...state,
+                Cart: action.data
+            }
         case types.ADD_TO_CART:
             return {
                 ...state,
-                Cart: [
-                    ...state.Cart,
-                    {
-                        amount: 1,
-                        idProduct: action.idProduct
-                    }
-                ]
+                Cart: action.data
             }
-        case types.EDIT_CART:
+        case types.REMOVE_CART:
             return {
                 ...state,
-                Cart: editCart(state, action.obj)
+                Cart: action.data
+            }
+        case types.UPDATE_CART:
+            return {
+                ...state,
+                Cart: action.data
             }
         case types.WATCHED_PRODUCT:
             return {

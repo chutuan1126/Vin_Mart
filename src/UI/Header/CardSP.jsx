@@ -1,13 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import CanhGaCP from '../../assets/images/ImageProducts/canh-ga-cp.jpg';
+//FormatMoney
+import { FormatMoney } from '../../assets/helper/formatMoney';
 
 const Bound = styled.div`
     display: flex;
     width: 100%;
     height: 65px;
-    padding: 7px 0;
+    padding: 5px 0;
     .card_img {
         width: 65px;
         height: 50px;
@@ -15,6 +16,8 @@ const Bound = styled.div`
         object-fit: cover;
     }
     .card_content {
+        width: 100%;
+        height: 100%;
         &_top {
             color: #333;
             text-align: left;
@@ -44,12 +47,12 @@ const Bound = styled.div`
 function CardSP({ item }) {
     return (
         <Bound>
-            <img className="card_img" src={CanhGaCP} alt="canh-ga-cp" />
+            <img className="card_img" src={item.productId.faceProduct} alt="canh-ga-cp" />
             <div className="card_content">
-                <span className="card_content_top">MEATDeli Thịt heo (cho món kho) (S) (300g)</span>
+                <span className="card_content_top">{item.productId.name}</span>
                 <div className="card_content_bottom">
-                    <span>x{item.amount}</span>
-                    <span>59.000đ</span>
+                    <span>x{item.quantity}</span>
+                    <span>{FormatMoney(item.productId.price)}đ</span>
                 </div>
             </div>
         </Bound>

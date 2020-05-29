@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 const Bound = styled.div`
-    margin-top: 125px;
     width: 100%;
     height: max-content;
     .slide-wrapper {
@@ -83,8 +82,20 @@ const Bound = styled.div`
 `
 
 function Slide() {
+    useEffect(() => {
+        if (document.getElementById('slide')) {
+            window.addEventListener('scroll', () => {
+                if (window.scrollY >= 1) {
+                    document.getElementById('slide').style.marginTop = "125px";
+                }
+                if (window.scrollY === 0) {
+                    document.getElementById('slide').style.marginTop = "0";
+                }
+            });
+        }
+    }, []);
     return (
-        <Bound>
+        <Bound id="slide">
             <div className="slide-wrapper">
                 <span className="arrow-left">
                     <i className="arrow-left-icon"></i>

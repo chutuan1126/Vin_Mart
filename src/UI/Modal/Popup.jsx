@@ -2,6 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { useDispatch } from 'react-redux';
+import { setLocation } from '../../Redux/Location/Location.action';
+
+//icons
 import Location from '../../assets/images/icons/location.svg';
 
 const Bound = styled.div`
@@ -48,11 +52,12 @@ const Bound = styled.div`
     }
 `
 
-function Popup({ setLocation, setIsShowing }) {
+function Popup({ setIsShowing }) {
+    const dispatch = useDispatch();
 
     function onClickLocation(e) {
         setIsShowing(false);
-        setLocation(e.target.textContent);
+        dispatch(setLocation(e.target.textContent));
     }
     return (
         <Bound>

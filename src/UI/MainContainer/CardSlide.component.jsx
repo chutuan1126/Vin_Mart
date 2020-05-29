@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { memo, useState } from 'react';
 import styled from 'styled-components';
+
+// import { useDispatch } from 'react-redux';
+// import { getCateData } from '../../Redux/Product/Product.action';
 
 //components
 import Card from './Card.component';
+
+//icons
+import arrow from '../../assets/images/icons/arrow_bottom.svg';
 
 const Bound = styled.div`
     margin: auto;
@@ -25,6 +31,8 @@ const Bound = styled.div`
         padding-bottom: 20px;
         background-color: #fff;
         .card_content_main_carousel {
+            position: relative;
+            z-index: 0;
             margin: 0 10px;
             height: 420px;
             overflow: hidden;
@@ -32,13 +40,51 @@ const Bound = styled.div`
             ::-webkit-scrollbar {
                 display: none;
             }
+            .btn_pre,
+            .btn_next {
+                position: absolute;
+                top: 50%;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                background-color: #fff;
+                border: 1px solid #e4e4e4;
+                box-shadow: 0 0 8px #e4e4e4;
+                transition: .3s ease-in-out;
+                cursor: pointer;
+                z-index: 2;
+                &>img {
+                    width: 100%;
+                    height: 100%;
+                }
+                &:hover {
+                    width: 50px;
+                    height: 50px;
+                    box-shadow: none;
+                    border: 1px solid #000;
+                }
+            }
+            .btn_pre {
+                left: -10px;
+                transform: rotate(90deg) translate(-50%, -50%);
+                &:hover {
+                    left: -20px;
+                }
+            }
+            .btn_next {
+                right: -10px;
+                transform: rotate(-90deg) translate(50%, -50%);
+                &:hover {
+                    right: -20px;
+                }
+            }
             &_figure {
                 display: grid;
                 width: max-content;
                 height: 420px;
                 padding: 20px 5px;
                 grid-column-gap: 10px;
-                grid-template-columns: repeat(10, 1fr);
+                grid-template-columns: repeat(5, 1fr);
             }
             &_figure.no_carousel_figure {
                 width: 100%;
@@ -73,6 +119,15 @@ const Bound = styled.div`
 `
 
 function CardSlide({ data, title, allProduct }) {
+    const [pageCarousel, setPageCarousel] = useState(false);
+
+    function loadSubData() {
+        setPageCarousel(false);
+    }
+    function loadAddData() {
+        setPageCarousel(true);
+    }
+
     return (
         <Bound>
             <h1 className="card_title_main">{title}</h1>
@@ -87,7 +142,13 @@ function CardSlide({ data, title, allProduct }) {
                                 }
                             </figure>
                         </div>
-                        : <div className="card_content_main_carousel ">
+                        : <div className="card_content_main_carousel">
+                            <span className="btn_pre" onClick={loadSubData} page={pageCarousel ? 2 : 1}>
+                                <img src={arrow} alt="arrow" />
+                            </span>
+                            <span className="btn_next" onClick={loadAddData} page={pageCarousel ? 2 : 1}>
+                                <img src={arrow} alt="arrow" />
+                            </span>
                             <figure className="card_content_main_carousel_figure">
                                 {
                                     data && data.filter((item, index) => index < 10)
@@ -104,4 +165,4 @@ function CardSlide({ data, title, allProduct }) {
     )
 }
 
-export default CardSlide;
+export default memo(CardSlide);

@@ -16,13 +16,18 @@ import MenuBars from './MenuBars.component';
 import Modal from '../Modal/Modal';
 
 //react-redux
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCart } from '../../Redux/Cart/Cart.action';
+
+//FormatMoney
+import { FormatMoney } from '../../assets/helper/formatMoney';
+
 import Popup from '../Modal/Popup';
 import CardSmall from './CardSmall';
 import CardSP from './CardSP';
 
 const Bound = styled.div`
-    position: fixed;
+    position: static;
     top: 0;
     width: 100%;
     height: 120px;
@@ -102,7 +107,7 @@ const Bound = styled.div`
             }
             &_cate_sub.sub_two {
                 position: relative;
-                padding: 5px 0;
+                padding: 10px 0;
                 box-sizing: content-box;
                 &:hover .box_cart {
                     display: block;
@@ -260,16 +265,15 @@ const Bound = styled.div`
 `
 
 function Header() {
+    const dispatch = useDispatch();
     const [count, setCount] = useState(0);
     const [newItem, setNewItem] = useState('');
-    // const [showCart, setShowCart] = useState(true);
     const [isShowing, setIsShowing] = useState(true);
     const [toggleShow, setToggleShow] = useState(false);
-    const [location, setLocation] = useState('Select City');
 
-    const { Cart, Watched } = useSelector(state => ({
-        Cart: state.Cart,
-        Watched: state.Watched
+    const { CartReducer, LocationReducer } = useSelector(state => ({
+        CartReducer: state.CartReducer,
+        LocationReducer: state.LocationReducer
     }));
 
     function onChangeSearch(e) {
@@ -279,13 +283,36 @@ function Header() {
     function onClickSetLocation() {
         setIsShowing(true);
     }
+    function totalMoney() {
+        let sum = 0;
+        if (CartReducer && CartReducer.Cart) {
+            for (let i = 0; i < CartReducer.Cart.length; i++) {
+                sum += Number(CartReducer.Cart[i].productId.price) * Number(CartReducer.Cart[i].quantity);
+            }
+        };
+
+        return sum;
+    }
 
     useEffect(() => {
-        setCount(Cart.length);
-    }, [Cart]);
+        dispatch(getCart());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (!CartReducer) return;
+        if (!CartReducer.Cart) return;
+        setCount(CartReducer.Cart.length);
+        LocationReducer && setIsShowing(false);
+    }, [CartReducer, LocationReducer]);
 
     useEffect(() => {
         window.addEventListener('scroll', () => {
+            if(window.scrollY >= 1) {
+                document.getElementById('header').style.position = "fixed";
+            }
+            if(window.scrollY === 0) {
+                document.getElementById('header').style.position = "static";
+            }
             if (window.scrollY >= 475) {
                 document.getElementById('img').style.height = "38px";
                 document.getElementById('navId').style.height = "50px";
@@ -297,11 +324,9 @@ function Header() {
         });
     }, []);
 
-    console.log(Watched);
-
     return (
-        <Bound>
-            <Modal isShowing={isShowing} content={<Popup setLocation={setLocation} setIsShowing={setIsShowing} />} />
+        <Bound id="header">
+            <Modal isShowing={isShowing} content={<Popup setIsShowing={setIsShowing} />} />
             <div id="navId" className="header_info">
                 <div className="header_info_top">
                     <Link id="img" className="header_info_top_logo" to="/">
@@ -327,26 +352,28 @@ function Header() {
                             <span className="cart">Giỏ hàng của bạn</span>
                             <span className="cart"><b>({count}) sản phẩm</b></span>
                         </span>
-                        <div className="box_cart">
-                            <div className="box_cart_main">
-                                {
-                                    Cart && Cart.map((item, index) => <CardSP key={index} item={item} />)
-                                }
+                        {
+                            CartReducer && CartReducer.Cart.length !== 0 && <div className="box_cart">
+                                <div className="box_cart_main">
+                                    {
+                                        CartReducer.Cart.map((item, index) => <CardSP key={index} item={item} />)
+                                    }
+                                </div>
+                                <div className="box_cart_total">
+                                    <span>Có tổng số {CartReducer.Cart.length} sản phẩm</span>
+                                    <span>Tổng tiền: <b>{FormatMoney(totalMoney())}đ</b></span>
+                                </div>
+                                <div className="box_cart_btn">
+                                    <button>Xem chi tiết</button>
+                                    <button>Thanh toán ngay</button>
+                                </div>
                             </div>
-                            <div className="box_cart_total">
-                                <span>Có tổng số {count} sản phẩm</span>
-                                <span>Tổng tiền: <b>680.215đ</b></span>
-                            </div>
-                            <div className="box_cart_btn">
-                                <button>Xem chi tiết</button>
-                                <button>Thanh toán ngay</button>
-                            </div>
-                        </div>
+                        }
                     </div>
                     <div className="header_info_top_cate_sub">
                         <span onClick={onClickSetLocation}>
                             <span className="cart">Khu vực giao hàng</span>
-                            <span className="cart"><b>{location}</b></span>
+                            <span className="cart"><b>{LocationReducer.Location}</b></span>
                         </span>
                     </div>
                 </div>
@@ -369,18 +396,10 @@ function Header() {
                 {
                     toggleShow && <div className="show_watched">
                         <div className="show_watched_container">
-                            <div  className="show_watched_container_wrapper">
-                                <CardSmall />
-                                <CardSmall />
-                                <CardSmall />
-                                <CardSmall />
-                                <CardSmall />
-                                <CardSmall />
-                                <CardSmall />
-                                <CardSmall />
-                                <CardSmall />
-                                <CardSmall />
-                                <CardSmall />
+                            <div className="show_watched_container_wrapper">
+                                {
+                                    <CardSmall />
+                                }
                             </div>
                         </div>
                     </div>
