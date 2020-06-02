@@ -140,7 +140,7 @@ const Bound = styled.footer`
 
 function Footer() {
     return (
-        <Bound>
+        <Bound id='footer'>
             <div className="footer_top">
                 <div className="footer_top_cate">
                     <div className="footer_top_cate_image">

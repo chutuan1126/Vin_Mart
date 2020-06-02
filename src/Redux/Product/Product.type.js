@@ -1,2 +1,4 @@
-export const GET_ALL_DATA = "GET_ALL_DATA";
+export const GET_DATA_HOME = "GET_DATA_HOME";
+export const GET_DATA_OF_TYPE = "GET_DATA_OF_TYPE";
+export const GET_DATA_SINGLE_PRODUCT = "GET_DATA_SINGLE_PRODUCT";
 export const REFRESH_DATA = "REFRESH_DATA";

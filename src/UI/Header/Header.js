@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 //icons
+import Logo_Big from '../../assets/images/icons/logo_1.svg';
 import Cart_icon from '../../assets/images/icons/cart.svg';
 import Search from '../../assets/images/icons/search.svg';
 import Support from '../../assets/images/icons/support.svg';
@@ -82,23 +83,14 @@ const Bound = styled.div`
                     padding: 0 7px;
                     box-sizing: border-box;
                 }
-                &>span {
+                &>a {
                     padding: 4px 0;
-                    a {
+                    text-decoration: none;
+                    p {
                         display: block;
                         color: #fff;
                         font-size: 13px;
                         font-weight: bold;
-                        line-height: 16px;
-                        text-decoration: none;
-                        box-sizing: border-box;
-                    }
-                    .cart {
-                        display: block;
-                        color: #fff;
-                        margin: 0;
-                        padding: 0;
-                        font-size: 13px;
                         line-height: 16px;
                         text-decoration: none;
                         box-sizing: border-box;
@@ -111,6 +103,16 @@ const Bound = styled.div`
                 box-sizing: content-box;
                 &:hover .box_cart {
                     display: block;
+                }
+                .cart {
+                    display: block;
+                    color: #fff;
+                    margin: 0;
+                    padding: 0;
+                    font-size: 13px;
+                    line-height: 16px;
+                    text-decoration: none;
+                    box-sizing: border-box;
                 }
                 .box_cart {
                     display: none;
@@ -138,9 +140,10 @@ const Bound = styled.div`
                         overflow: hidden;
                         overflow-y: scroll;
                         width: 100%;
-                        min-height: 65px;
+                        min-height: 90px;
                         max-height: 260px;
                         height: max-content;
+                        padding: 5 0;
                         ::-webkit-scrollbar {
                             width: 5px;
                         }
@@ -302,26 +305,28 @@ function Header() {
         if (!CartReducer) return;
         if (!CartReducer.Cart) return;
         setCount(CartReducer.Cart.length);
-        LocationReducer && setIsShowing(false);
+        LocationReducer && LocationReducer.Location && setIsShowing(false);
     }, [CartReducer, LocationReducer]);
 
     useEffect(() => {
-        window.addEventListener('scroll', () => {
-            if(window.scrollY >= 1) {
-                document.getElementById('header').style.position = "fixed";
-            }
-            if(window.scrollY === 0) {
-                document.getElementById('header').style.position = "static";
-            }
-            if (window.scrollY >= 475) {
-                document.getElementById('img').style.height = "38px";
-                document.getElementById('navId').style.height = "50px";
-            }
-            if (window.scrollY <= 475) {
-                document.getElementById('img').style.height = "58px";
-                document.getElementById('navId').style.height = "80px";
-            }
-        });
+        if (document.getElementById('header')) {
+            window.addEventListener('scroll', () => {
+                if (window.scrollY >= 1) {
+                    document.getElementById('header').style.position = "fixed";
+                }
+                if (window.scrollY === 0) {
+                    document.getElementById('header').style.position = "static";
+                }
+                if (window.scrollY >= 475) {
+                    document.getElementById('img').style.height = "38px";
+                    document.getElementById('navId').style.height = "50px";
+                }
+                if (window.scrollY <= 475) {
+                    document.getElementById('img').style.height = "58px";
+                    document.getElementById('navId').style.height = "80px";
+                }
+            });
+        }
     }, []);
 
     return (
@@ -330,7 +335,7 @@ function Header() {
             <div id="navId" className="header_info">
                 <div className="header_info_top">
                     <Link id="img" className="header_info_top_logo" to="/">
-                        <img src="https://vinmart.com/images/logo_1.svg" alt="Logo" />
+                        <img src={Logo_Big} alt="Logo" />
                     </Link>
                     <span className="header_info_top_search">
                         <input
@@ -341,10 +346,10 @@ function Header() {
                     </span>
                     <div className="header_info_top_cate_sub">
                         <img src={User_Circle} height="40" alt="User_Circle" />
-                        <span>
-                            <Link to="/login" >Đăng nhập</Link>
-                            <Link to="/sign_up" >Đăng ký</Link>
-                        </span>
+                        <Link to="/login" >
+                            <p>Đăng nhập</p>
+                            <p>Đăng ký</p>
+                        </Link>
                     </div>
                     <div className="header_info_top_cate_sub sub_two">
                         <img src={Cart_icon} height="40" alt="Cart" />
@@ -409,4 +414,4 @@ function Header() {
     )
 }
 
-export default Header;
+export default memo(Header);

@@ -61,11 +61,10 @@ export const removeFromCart = idProduct => async dispatch => {
     }
 }
 
-export const updateCart = idProduct => async dispatch => {
-
+export const updateCart = (idProduct, quantity) => async dispatch => {
     const api = `http://localhost:8080/cart/updatecart`;
 
-    const res = await axios.post(api, { id: idProduct });
+    const res = await axios.post(api, { id: idProduct, quantity: quantity });
 
     try {
         const { data } = res;

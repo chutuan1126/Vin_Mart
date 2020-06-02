@@ -2,25 +2,40 @@ import React, { Fragment } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 //components
+import Login from '../Login/Login';
 import Header from '../Header/Header';
 import Home from '../Home/Home';
 import Products from '../Products/Products';
+import SingleProduct from '../SingleProduct/SingleProduct';
 import Footer from '../Footer/Footer';
 
-function MainContainer() {
+const RouteWithLayout = ({ component, ...rest }) => {
+    return (
+        <React.Fragment>
+            <Header />
+            <Route {...rest} component={component} />
+            <Footer />
+        </React.Fragment>
+    );
+};
 
+function MainContainer() {
     return (
         <Fragment>
-            <Header />
             <Switch>
-                <Route exact path='/'>
+                <Route exact path="/login">
+                    <Login />
+                </Route>
+                <RouteWithLayout exact path='/'>
                     <Home />
-                </Route>
-                <Route exact path='/products/:cate'>
+                </RouteWithLayout>
+                <RouteWithLayout exact path='/products/:cate/p=:page'>
                     <Products />
-                </Route>
+                </RouteWithLayout>
+                <RouteWithLayout exact path='/product/:idproduct'>
+                    <SingleProduct />
+                </RouteWithLayout>
             </Switch>
-            <Footer />
         </Fragment>
     )
 }

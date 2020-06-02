@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Bound = styled.ul`
@@ -12,6 +13,12 @@ const Bound = styled.ul`
     background-color: #fff;
     min-width: 198px;
     height: max-content;
+    a {
+        width: 200px;
+        height: 40px;
+        color: #000;
+        text-decoration: none;
+    }
     .menu_item {
         position: relative;
         color: #000;
@@ -35,7 +42,8 @@ const Bound = styled.ul`
             border-left: 20px solid #ed1c24;
 
         }
-        &:hover {
+        &:hover,
+        &:hover a {
             color: #fff;
             background: #ed1c24;
         }
@@ -45,14 +53,14 @@ const Bound = styled.ul`
 function MenuBars() {
     return (
         <Bound className="list_items">
-            <li className="menu_item">Thịt - Cá - Trứng</li>
-            <li className="menu_item">Rau - Củ - Quả</li>
-            <li className="menu_item">Gia vị</li>
-            <li className="menu_item">Thực phẩm khô</li>
-            <li className="menu_item">Đồ uống - Giải khát</li>
-            <li className="menu_item">Sữa</li>
-            <li className="menu_item">Hóa phẩm</li>
-            <li className="menu_item">Chăm sóc cá nhân</li>
+            <Link to="/products/Meal/p=1"><li className="menu_item">Thịt - Cá - Trứng</li></Link>
+            <Link to="/products/Vegetable/p=1"><li className="menu_item">Rau - Củ - Quả</li></Link>
+            <Link to="/products/Spice/p=1"><li className="menu_item">Gia vị</li></Link>
+            <Link to="/products/DryFood/p=1"><li className="menu_item">Thực phẩm khô</li></Link>
+            <Link to="/products/Drinks/p=1"><li className="menu_item">Đồ uống - Giải khát</li></Link>
+            <Link to="/products/Milk/p=1"><li className="menu_item">Sữa</li></Link>
+            <Link to="/products/chemical/p=1"><li className="menu_item">Hóa phẩm</li></Link>
+            <Link to="/products/Care/p=1"><li className="menu_item">Chăm sóc cá nhân</li></Link>
         </Bound>
     )
 }

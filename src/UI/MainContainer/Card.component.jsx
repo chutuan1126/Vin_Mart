@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import LazyLoad from 'react-lazyload';
 
 //react-redux
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,6 +16,9 @@ const Bound = styled.div`
     padding: 15px;
     transition: .5s;
     cursor: pointer;
+    &>a {
+        text-decoration: none;
+    }
     .cart-content {
         width: 100%;
         height: auto;
@@ -47,8 +52,14 @@ const Bound = styled.div`
         }
         .card-name {
             position: relative;
+            width: 100%;
+            height: 44px;
             .card-name-content {
+                position: absolute;
                 display: -webkit-box;
+                top: 0;
+                left: 0;
+                z-index: 6;
                 color: rgba(0, 0, 0, .87);
                 width: ${props => props.width ? "172px" : "192px"};
                 height: 44px;
@@ -60,6 +71,11 @@ const Bound = styled.div`
                 word-break: break-word;
                 -webkit-box-orient: vertical;
                 font-family: Roboto, sans-serif;
+                &:hover ~.card-name-tooltip {
+                    top: -90%;
+                    opacity: .8;
+                    visibility: visible;
+                }
             }
             .card-name-tooltip {
                 position: absolute;
@@ -81,11 +97,6 @@ const Bound = styled.div`
                 transition: 0.3s ease-in-out;
                 z-index: 5;
             }
-            &:hover .card-name-tooltip {
-                top: -105%;
-                opacity: .8;
-                visibility: visible;
-            }
         }
         .card-price {
             color: #333;
@@ -106,7 +117,7 @@ const Bound = styled.div`
     }
     .card-cart {
         display: flex;
-        margin: 0 auto;
+        margin: 10px auto;
         width: ${props => props.width ? "170px" : "192px"};
         height: 36px;
         justify-content: space-between;
@@ -153,10 +164,15 @@ function Card({ item, width }) {
     }
     function editToCart(action) {
         if (action === "sub") {
-            cart === 1
-                ? dispatch(removeFromCart(item._id))
-                : dispatch(updateCart(item._id))
+            if (cart === 1) {
+                setCart(0);
+                dispatch(removeFromCart(item._id));
+            } else {
+                setCart(cart - 1);
+                dispatch(updateCart(item._id));
+            }
         } else {
+            setCart(cart + 1);
             dispatch(addToCart(item._id));
         }
     }
@@ -168,27 +184,37 @@ function Card({ item, width }) {
         if (!CartReducer) return;
         if (!CartReducer.Cart) return;
 
-        const prod = CartReducer.Cart.filter(i => i.productId._id === item._id);
+        if (window.location) {
+            const prod = CartReducer.Cart.filter(i => i.productId._id === item._id);
 
-        prod.length ? prod.map(i => setCart(i.quantity)) : setCart(0);
+            prod.length ? setCart(prod[0].quantity) : setCart(0);
+        }
     }, [CartReducer, item]);
 
     return (
         <Bound width={width}>
-            <div className="cart-content" onClick={onClickAddWatched}>
-                <div className="card-image">
-                    {Number(item.promotion) > 0 && <span className="card-image-promotion">-{item.promotion > 1000 ? Math.floor(item.promotion / 1000) : Math.floor(item.promotion)}{item.promotion > 1000 && "k"}</span>}
-                    <img src={item.faceProduct} alt={item.name} />
+            <Link to={`/product/${item._id}`}>
+                <div className="cart-content" onClick={onClickAddWatched}>
+                    <div className="card-image">
+                        {
+                            Number(item.promotion) > 0 && <span className="card-image-promotion">-{item.promotion > 1000
+                                ? Math.floor(item.promotion / 1000)
+                                : Math.floor(item.promotion)}{item.promotion > 1000 && "k"}</span>
+                        }
+                        <LazyLoad>
+                            <img src={item.faceProduct} alt={item.name} />
+                        </LazyLoad>
+                    </div>
+                    <div className="card-name">
+                        <span className="card-name-content">{item.name}</span>
+                        <span className="card-name-tooltip">{item.name}</span>
+                    </div>
+                    <div className="card-price">
+                        <span className="card-price-main">{FormatMoney(item.price - item.promotion)}đ</span>
+                        {item.promotion > 0 && <span className="card-price-sub">{FormatMoney(item.price)}đ</span>}
+                    </div>
                 </div>
-                <div className="card-name">
-                    <span className="card-name-content">{item.name}</span>
-                    <span className="card-name-tooltip">{item.name}</span>
-                </div>
-                <div className="card-price">
-                    <span className="card-price-main">{FormatMoney(item.price - item.promotion)}đ</span>
-                    {item.promotion > 0 && <span className="card-price-sub">{FormatMoney(item.price)}đ</span>}
-                </div>
-            </div>
+            </Link>
             <div className="card-cart">
                 {cart !== 0 && <button className="cart-btn-while" onClick={() => editToCart("sub")}>-</button>}
                 {

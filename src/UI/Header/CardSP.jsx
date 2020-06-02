@@ -7,8 +7,7 @@ import { FormatMoney } from '../../assets/helper/formatMoney';
 const Bound = styled.div`
     display: flex;
     width: 100%;
-    height: 65px;
-    padding: 5px 0;
+    height: max-content;
     .card_img {
         width: 65px;
         height: 50px;

@@ -1,14 +1,11 @@
 import React from 'react';
-import { BrowserRouter as Router } from "react-router-dom";
 
 //component
 import MainContainer from './UI/Main/MainContainer';
 
-function App() {
+const App = () => {
   return (
-    <Router>
-      <MainContainer />
-    </Router>
+    <MainContainer />
   )
 }
 

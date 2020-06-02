@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 //components
 import Slide from '../Slide/Slide.component';
@@ -9,57 +9,50 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getDataHome, refreshData } from '../../Redux/Product/Product.action';
 
 function Home() {
-    const dispatch = useDispatch();
+    const cates = ["Meal", "Vegetable", "Spice", "DryFood", "Drinks", "Milk", "chemical", "Care"];
+    const title = ["Thịt - Cá - Trứng", "Rau - Củ - Quả", "Gia vị", "Thực phẩm khô", "Đồ uống - Giải khát", "Sữa", "Hóa phẩm", "Chăm sóc cá nhân"];
 
-    const [DataA, setDataA] = useState([]);
-    const [DataB, setDataB] = useState([]);
-    const [DataC, setDataC] = useState([]);
-    const [DataD, setDataD] = useState([]);
-    const [DataE, setDataE] = useState([]);
-    const [DataF, setDataF] = useState([]);
-    const [DataG, setDataG] = useState([]);
-    const [DataH, setDataH] = useState([]);
-    const [DataAll, setDataAll] = useState([]);
+    const dispatch = useDispatch();
+    const [dataHome, setDataHome] = useState(null);
 
     const { ProductReducer } = useSelector(state => ({
         ProductReducer: state.ProductReducer
     }));
 
     useEffect(() => {
-        dispatch(getDataHome({ page: 1, pageNumber: 5 }));
-        
-        return () => dispatch(refreshData());
-    },[dispatch]);
+        if (window.onload) {
+            window.scrollTo(0, 0);
+        }
+    });
 
     useEffect(() => {
-        if(!ProductReducer) return;
-        if(!ProductReducer.Products) return;
+        if (!ProductReducer) return;
+        if (!ProductReducer.Products) return;
 
-        setDataAll(ProductReducer.Products);
-        setDataA(ProductReducer.Products.filter(item => item.proid === "Meal"));
-        setDataB(ProductReducer.Products.filter(item => item.proid === "Vegetable"));
-        setDataC(ProductReducer.Products.filter(item => item.proid === "Spice"));
-        setDataD(ProductReducer.Products.filter(item => item.proid === "DryFood"));
-        setDataE(ProductReducer.Products.filter(item => item.proid === "DryFood"));
-        setDataF(ProductReducer.Products.filter(item => item.proid === "Milk"));
-        setDataG(ProductReducer.Products.filter(item => item.proid === "chemical"));
-        setDataH(ProductReducer.Products.filter(item => item.proid === "Care"));
+        setDataHome(ProductReducer.Products);
     }, [ProductReducer]);
 
+    useEffect(() => {
+        dispatch(getDataHome());
+
+        return () => dispatch(refreshData());
+    }, [dispatch]);
+
     return (
-        <Fragment>
+        <div id='main-container'>
             <Slide />
-            <CardSlide data={DataA} title="Thịt - Cá - Trứng" />
-            <CardSlide data={DataB} title="Rau - Củ - Quả" />
-            <CardSlide data={DataC} title="Gia vị" />
-            <CardSlide data={DataD} title="Thực phẩm khô" />
-            <CardSlide data={DataE} title="Đồ uống - Giải khát" />
-            <CardSlide data={DataF} title="Sữa" />
-            <CardSlide data={DataG} title="Hóa phẩm" />
-            <CardSlide data={DataH} title="Chăm sóc cá nhân" />
-            <CardSlide data={DataAll} allProduct={true} title="Các sản phẩm khác" />
-        </Fragment>
+            {
+                dataHome && cates
+                    .map((item, index) => <CardSlide
+                        key={index}
+                        type={item}
+                        title={title[index]}
+                        data={dataHome && dataHome.filter(i => i.proid === item)}
+                    />)
+            }
+            {dataHome && <CardSlide data={dataHome} type="all" title="Các sản phẩm khác" allProduct />}
+        </div>
     )
 }
 
-export default Home;
+export default React.memo(Home);
