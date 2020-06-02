@@ -97,22 +97,22 @@ const Bound = styled.div`
                     }
                 }
             }
+            .cart {
+                display: block;
+                color: #fff;
+                margin: 0;
+                padding: 0;
+                font-size: 13px;
+                line-height: 16px;
+                text-decoration: none;
+                box-sizing: border-box;
+            }
             &_cate_sub.sub_two {
                 position: relative;
                 padding: 10px 0;
                 box-sizing: content-box;
                 &:hover .box_cart {
                     display: block;
-                }
-                .cart {
-                    display: block;
-                    color: #fff;
-                    margin: 0;
-                    padding: 0;
-                    font-size: 13px;
-                    line-height: 16px;
-                    text-decoration: none;
-                    box-sizing: border-box;
                 }
                 .box_cart {
                     display: none;
