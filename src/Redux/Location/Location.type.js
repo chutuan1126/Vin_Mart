@@ -1,1 +1,2 @@
 export const SET_LOCATION = "SET_LOCATION";
+export const SET_LOGIN_FACEBOOK = "SET_LOGIN_FACEBOOK";

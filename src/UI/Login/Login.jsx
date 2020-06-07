@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
+// import FacebookLogin from 'react-facebook-login';
 import styled from 'styled-components';
 
+//react-redux, action
+import { useDispatch } from 'react-redux';
+import { setLoginFacebook } from '../../Redux/Location/Location.action';
+
 //icons
+import Back from '../../assets/images/icons/back.svg';
 import Logo from '../../assets/images/icons/logo_red.svg';
 import Phone from '../../assets/images/icons/phone.svg';
 import Google from '../../assets/images/icons/G-google.svg';
@@ -38,6 +44,18 @@ const Bound = styled.div`
         box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
         &_logo {
             width: 100%;
+            position: relative;
+            &_back {
+                position: absolute;
+                display: flex;
+                top: 0;
+                left: 0;
+                width: 35px;
+                height: 30px;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
             &>img {
                 margin-bottom: 25px;
             }
@@ -52,9 +70,11 @@ const Bound = styled.div`
         }
         &_signin {
             &_google, &_facebook, &_numberphone {
+                position: relative;
                 margin-bottom: 12px;
                 display: flex;
                 width: 100%;
+                height: 40px;
                 font-size: 15px;
                 font-weight: 400;
                 padding: 7px 21px;
@@ -73,6 +93,20 @@ const Bound = styled.div`
                 }
                 &:hover {
                     background-color: rgba(0, 0, 0, 0.04);
+                }
+                &_fafafacebook {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 40px;
+                    border: none;
+                    padding: 0 65px;
+                    font-size: 15px;
+                    font-weight: 400;
+                    text-align: left;
+                    color: rgba(0, 0, 0, 0.87);
+                    background-color: transparent;
                 }
             }
         }
@@ -143,20 +177,72 @@ const Bound = styled.div`
 `
 
 function Login() {
-    const [login, setLogin] = useState('login');
+    const dispatch = useDispatch();
+
+    const [status, setStatus] = useState('login');
+    const [login, setLogin] = useState({
+        email: '',
+        password: ''
+    });
 
     function onClick(action) {
-        setLogin(action);
+        setStatus(action);
     }
+
+    function onChangeEmail(e) {
+        const value = e.target.value.trim();
+        if (value) {
+            setLogin({
+                ...login,
+                email: value
+            });
+        } else {
+            setLogin({
+                ...login,
+                email: ''
+            });
+        }
+    }
+
+    function onChangePassword(e) {
+        const value = e.target.value.trim();
+        if (value) {
+            setLogin({
+                ...login,
+                password: value
+            });
+        } else {
+            setLogin({
+                ...login,
+                password: ''
+            });
+        }
+    }
+
+    function handleKeyUp(e) {
+        if (e.keyCode === 13) {
+            dispatch(setLoginFacebook(login));
+        }
+    }
+    function onClickSubmit() {
+        dispatch(setLoginFacebook(login));
+    }
+
     return (
         <Bound>
             <div className="login_container">
                 <div className="login_container_logo">
+                    {
+                        status === "phone"
+                        && <span className="login_container_logo_back" onClick={() => setStatus('login')}>
+                            <img src={Back} width="24" height="24" alt="back" />
+                        </span>
+                    }
                     <img src={Logo} height="72" alt="Logo" />
-                    <h1>{login === "register" ? "Tạo tài khoản" : "Đăng nhập"}</h1>
+                    <h1>{status === "register" ? "Tạo tài khoản" : "Đăng nhập"}</h1>
                 </div>
                 {
-                    login === "login"
+                    status === "login"
                         ? <React.Fragment>
                             <div className="login_container_signin">
                                 <button className="login_container_signin_google">
@@ -167,7 +253,7 @@ function Login() {
                                     <img src={Facebook} width="24" height="24" alt="facebook" />
                                     <span>Đăng nhập với Facebook</span>
                                 </button>
-                                <button className="login_container_signin_numberphone" onClick={() => onClick('register')}>
+                                <button className="login_container_signin_numberphone" onClick={() => onClick('phone')}>
                                     <img src={Phone} width="24" height="24" alt="phone" />
                                     <span>Đăng nhập với Số điện thoại</span>
                                 </button>
@@ -177,14 +263,27 @@ function Login() {
                                 <span className="login_container_or_or">Hoặc</span>
                             </div>
                             <div className="login_container_input">
-                                <CustomInput id="usename" type="text" name="usename" label="Email hoặc Số điện thoại" />
-                                <CustomInput id="password" type="password" name="password" label="Mật khẩu" />
+                                <CustomInput
+                                    id="usename"
+                                    type="text"
+                                    name="usename"
+                                    value={login.email}
+                                    handleChange={onChangeEmail}
+                                    label="Email hoặc Số điện thoại" />
+                                <CustomInput
+                                    id="password"
+                                    type="password"
+                                    name="password"
+                                    label="Mật khẩu"
+                                    value={login.password}
+                                    handleKeyUp={handleKeyUp}
+                                    handleChange={onChangePassword} />
                             </div>
                             <span className="login_container_qmk">Quên mật khẩu ?</span>
-                            <CustomButton>Đăng nhập</CustomButton>
+                            <CustomButton type="button" handleClick={onClickSubmit}>Đăng nhập</CustomButton>
                             <span className="login_container_signup" onClick={() => onClick('register')}>Tạo tài khoản</span>
                         </React.Fragment>
-                        : login === "register"
+                        : status === "register"
                             ? <React.Fragment>
                                 <div className="login_container_or">
                                     <span className="login_container_or_border"></span>
@@ -198,14 +297,16 @@ function Login() {
                                 <CustomButton>Tạo tài khoản</CustomButton>
                                 <span className="login_container_signup tar" onClick={() => onClick('login')}>Đăng nhập</span>
                             </React.Fragment>
-                            : <React.Fragment>
-                                <div className="login_container_or">
-                                    <span className="login_container_or_border"></span>
-                                    <span className="login_container_or_or">Nhập thông tin tài khoản</span>
-                                </div>
-                                <CustomInput id="number" type="number" name="number" label="Số điện thoại" />
-                                <CustomButton>Gửi mã xác nhận</CustomButton>
-                            </React.Fragment>
+                            : status === "phone"
+                                ? <React.Fragment>
+                                    <div className="login_container_or">
+                                        <span className="login_container_or_border"></span>
+                                        <span className="login_container_or_or">Nhập thông tin tài khoản</span>
+                                    </div>
+                                    <CustomInput id="number" type="number" name="number" label="Số điện thoại" />
+                                    <CustomButton>Gửi mã xác nhận</CustomButton>
+                                </React.Fragment>
+                                : null
                 }
             </div>
         </Bound>
@@ -213,3 +314,45 @@ function Login() {
 }
 
 export default Login;
+
+
+    //<FacebookLogin
+    //    cssClass="login_container_signin_facebook_fafafacebook"
+    //    appId="4456374524388618"
+    //    autoLoad={true}
+    //    icon={Facebook}
+    //    language="vi_VN"
+    //   fields="name,email,picture"
+    //    callback={responseFacebook} />
+
+    // const responseFacebook = (response) => {
+    //     setLogin(response);
+    // }
+
+    // useEffect(() => {
+    //     login && dispatch(setLoginFacebook(login));
+    // });
+
+    // useEffect(() => {
+    //     window.fbAsyncInit = function () {
+    //         window.FB.init({
+    //             appId: '4456374524388618',
+    //             cookie: true,
+    //             xfbml: true,
+    //             version: 'v7.0'
+    //         });
+    //         window.FB.getLoginStatus(function(response) {
+    //             console.log(response);
+    //         });
+    //     };
+    // });
+
+    // useEffect(() => {
+    //     (function (d, s, id) {
+    //         var js, fjs = d.getElementsByTagName(s)[0];
+    //         if (d.getElementById(id)) { return; }
+    //         js = d.createElement(s); js.id = id;
+    //         js.src = "https://connect.facebook.net/en_US/sdk.js";
+    //         fjs.parentNode.insertBefore(js, fjs);
+    //     }(document, 'script', 'facebook-jssdk'));
+    // });

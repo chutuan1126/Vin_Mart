@@ -80,13 +80,26 @@ const Bound = styled.div`
                 cursor: pointer;
                 &>img {
                     width: 40px;
-                    padding: 0 7px;
+                    height: 40px;
+                    padding: 7px 7px;
+                    border-radius: 40px;
+                    object-fit: auto;
                     box-sizing: border-box;
+                }
+                &>span {
+                    padding: 4px 0;
+                    &>p {
+                        display: block;
+                        color: #fff;
+                        font-size: 13px;
+                        font-weight: bold;
+                        line-height: 16px;
+                    }
                 }
                 &>a {
                     padding: 4px 0;
                     text-decoration: none;
-                    p {
+                    &>p {
                         display: block;
                         color: #fff;
                         font-size: 13px;
@@ -270,6 +283,7 @@ const Bound = styled.div`
 function Header() {
     const dispatch = useDispatch();
     const [count, setCount] = useState(0);
+    const [login, setLogin] = useState(null);
     const [newItem, setNewItem] = useState('');
     const [isShowing, setIsShowing] = useState(true);
     const [toggleShow, setToggleShow] = useState(false);
@@ -302,11 +316,19 @@ function Header() {
     }, [dispatch]);
 
     useEffect(() => {
+        if (!LocationReducer) return;
+        if (!LocationReducer.Location) return;
+
+        setIsShowing(false);
+        setLogin(LocationReducer.Facebook);
+    }, [LocationReducer]);
+
+    useEffect(() => {
         if (!CartReducer) return;
         if (!CartReducer.Cart) return;
         setCount(CartReducer.Cart.length);
-        LocationReducer && LocationReducer.Location && setIsShowing(false);
-    }, [CartReducer, LocationReducer]);
+    }, [CartReducer]);
+
 
     useEffect(() => {
         if (document.getElementById('header')) {
@@ -345,11 +367,23 @@ function Header() {
                             value={newItem} />
                     </span>
                     <div className="header_info_top_cate_sub">
-                        <img src={User_Circle} height="40" alt="User_Circle" />
-                        <Link to="/login" >
-                            <p>Đăng nhập</p>
-                            <p>Đăng ký</p>
-                        </Link>
+                        {
+                            login
+                                ? <React.Fragment>
+                                    <img src={login.userFace} height="40" alt="User_Circle" />
+                                    <span>
+                                        <p>{login.userName}</p>
+                                        <p>Đăng xuất</p>
+                                    </span>
+                                </React.Fragment>
+                                : <React.Fragment>
+                                    <img src={User_Circle} height="40" alt="User_Circle" />
+                                    <Link to="/login" >
+                                        <p>Đăng nhập</p>
+                                        <p>Đăng ký</p>
+                                    </Link>
+                                </React.Fragment>
+                        }
                     </div>
                     <div className="header_info_top_cate_sub sub_two">
                         <img src={Cart_icon} height="40" alt="Cart" />

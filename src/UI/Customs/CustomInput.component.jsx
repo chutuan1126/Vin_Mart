@@ -31,6 +31,12 @@ const Bound = styled.div`
         padding-bottom: 10.5px;
         background-color: transparent;
         border: 1px solid rgba(0, 0, 0, 0.23);
+        &.value ~.label {
+            color: #3f51b5;
+            top: 0;
+            z-index: 1;
+            font-size: 12px;
+        }
         &:hover {
             border: 1px solid rgba(0, 0, 0, 0.87);
         }
@@ -48,9 +54,14 @@ const Bound = styled.div`
     }
 `
 
-const CustomInput = ({ handleChange, label, id, ...otherProps }) => (
+const CustomInput = ({ handleChange, handleKeyUp, label, value, id, ...otherProps }) => (
     <Bound>
-        <input onChange={handleChange} {...otherProps} />
+        <input
+            className={value ? 'value' : null}
+            value={value}
+            onChange={handleChange}
+            onKeyUp={handleKeyUp ? handleKeyUp : null}
+            {...otherProps} />
         {label && <label htmlFor={id} className="label">{label}</label>}
     </Bound>
 )

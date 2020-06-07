@@ -41,7 +41,6 @@ export const getDataOfType = ({ type, pageNumber }) => async dispatch => {
 
 export const getSingleProduct = id => async dispatch => {
     const api = `http://localhost:8080/product/getproduct/singleproduct/${id}`;
-
     const res = await axios.post(api, {});
 
     try {
