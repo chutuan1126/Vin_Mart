@@ -54,16 +54,18 @@ const Bound = styled.div`
     }
 `
 
-const CustomInput = ({ handleChange, handleKeyUp, label, value, id, ...otherProps }) => (
-    <Bound>
-        <input
-            className={value ? 'value' : null}
-            value={value}
-            onChange={handleChange}
-            onKeyUp={handleKeyUp ? handleKeyUp : null}
-            {...otherProps} />
-        {label && <label htmlFor={id} className="label">{label}</label>}
-    </Bound>
-)
+const CustomInput = ({ handleChange, handleKeyUp, label, value, id, ...otherProps }) => {
+    return (
+        <Bound>
+            <input
+                className={value ? 'value' : null}
+                value={value}
+                onChange={handleChange}
+                onKeyUp={handleKeyUp ? handleKeyUp : null}
+                {...otherProps} />
+            {label && <label htmlFor={id} className="label">{label}</label>}
+        </Bound>
+    )
+}
 
 export default CustomInput;

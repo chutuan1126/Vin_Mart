@@ -1,7 +1,7 @@
 import * as types from './Login.type';
 
 const innitialState = {
-    LoginProducts: null
+    LoginAdmin: null
 }
 
 export default function LoginReducer(state = innitialState, action) {
@@ -9,7 +9,7 @@ export default function LoginReducer(state = innitialState, action) {
         case types.LOGIN_ADMIN:
             return {
                 ...state,
-                AdminProducts: action.data
+                LoginAdmin: action.data
             }
         default: return state;
     }

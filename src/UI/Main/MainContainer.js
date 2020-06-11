@@ -1,11 +1,11 @@
-import React, { Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
 //Auth
 import { Auth } from '../../Middleware/Auth.Middleware';
 
 //components
-import Login from '../Login/Login';
+import Login from '../MainLogin/Login';
 import Header from '../Header/Header';
 import Home from '../Home/Home';
 import Products from '../Products/Products';
@@ -15,32 +15,35 @@ import MainAdmin from '../MainAdmin/MainAdmin';
 import AddProductAdmin from '../MainAdmin/AddProductAdmin/AddProductAdmin';
 import HeaderAdmin from '../MainAdmin/HeaderAdmin/HeaderAdmin';
 
-// function LoginPage() {
-//     const history = useHistory();
-//     const location = useLocation();
-
-//     const { from } = location.state || { from: { pathname: "/" } };
-
-//     const login = () => {
-//         Auth.authenticate(() => {
-//             history.replace(from);
-//         });
-//     };
-
-//     if(Auth.isAuthenticated) {
-//         return <Redirect to={"/protected"} />
-//     }
-
-//     return (
-//         <div>
-//             <p>You must log in to view the page at {from.pathname}</p>
-//             <button onClick={login}>Log in</button>
-//         </div>
-//     );
-// }
-
 function PrivateRoute({ children, ...rest }) {
-    Auth.isAuthenticated = true;
+    const [loading, setLoading] = useState(true);
+    const [redirect, setRedirect] = useState(false);
+
+    useEffect(() => {
+        const token = sessionStorage.getItem('token');
+        fetch('/checkToken' + token)
+            .then(res => {
+                if (res.status === 200) {
+                    setLoading(false);
+                } else {
+                    const error = new Error(res.error);
+                    throw error;
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                setLoading(false);
+                setRedirect(true);
+            });
+    });
+
+    if (loading) {
+        return null;
+    }
+    if (redirect) {
+        return <Redirect to="/login" />;
+    }
+
     return (
         <React.Fragment>
             <HeaderAdmin />
@@ -48,7 +51,7 @@ function PrivateRoute({ children, ...rest }) {
                 {...rest}
                 render={({ location }) =>
                     Auth.isAuthenticated ? (children) :
-                        (<Redirect to={{ pathname: "/admin/products", state: { from: location } }} />)
+                        (<Redirect to={{ pathname: "/login", state: { from: location } }} />)
                 } />
         </React.Fragment>
     );

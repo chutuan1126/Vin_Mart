@@ -6,6 +6,7 @@ export const Auth = {
     },
     signout(cb) {
         Auth.isAuthenticated = false;
+        sessionStorage.clear();
         setTimeout(cb, 100);
     }
 };

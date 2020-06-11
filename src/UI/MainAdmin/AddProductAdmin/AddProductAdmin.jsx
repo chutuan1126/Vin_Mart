@@ -53,12 +53,15 @@ function AddProductAdmin() {
     });
 
     function onClickAddProduct() {
+        const token = sessionStorage.getItem('token');
+
         dispatch(addProduct({
             name: value.name,
             proid: value.proid,
             price: value.price,
             faceProduct: value.faceProduct,
-            promotion: value.promotion
+            promotion: value.promotion,
+            token: token
         }));
         setValue({
             name: '',

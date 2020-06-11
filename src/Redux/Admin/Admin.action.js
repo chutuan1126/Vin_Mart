@@ -1,10 +1,10 @@
 import * as types from './Admin.type';
 import axios from 'axios';
 
-export const getAdminProducts = () => async dispatch => {
-    const api = `http://localhost:8080/product/getproduct`;
+export const getAdminProducts = ({ token }) => async dispatch => {
+    const api = `http://localhost:8080/product/getproducts`;
 
-    const res = await axios.post(api, {});
+    const res = await axios.post(api, { token });
 
     try {
         const { data } = res;
@@ -20,10 +20,10 @@ export const getAdminProducts = () => async dispatch => {
     }
 }
 
-export const addProduct = ({ name, proid, price, faceProduct, promotion }) => async dispatch => {
+export const addProduct = ({ name, proid, price, faceProduct, promotion, token }) => async dispatch => {
     const api = `http://localhost:8080/product/addproduct`;
 
-    const res = await axios.post(api, { name, proid, price, faceProduct, promotion });
+    const res = await axios.post(api, { name, proid, price, faceProduct, promotion, token });
 
     try {
         const { data } = res;
@@ -39,10 +39,10 @@ export const addProduct = ({ name, proid, price, faceProduct, promotion }) => as
     }
 }
 
-export const removeProduct = id => async dispatch => {
+export const removeProduct = ({ id, token }) => async dispatch => {
     const api = `http://localhost:8080/product/deleteproduct`;
 
-    const res = await axios.post(api, { id });
+    const res = await axios.post(api, { id, token });
 
     try {
         const { data } = res;
@@ -58,10 +58,10 @@ export const removeProduct = id => async dispatch => {
     }
 }
 
-export const updateProduct = ({ id, name, proid, price, faceProduct, promotion }) => async dispatch => {
+export const updateProduct = ({ id, name, proid, price, faceProduct, promotion, token }) => async dispatch => {
     const api = `http://localhost:8080/product/editproduct`;
 
-    const res = await axios.post(api, { id, name, proid, price, faceProduct, promotion });
+    const res = await axios.post(api, { id, name, proid, price, faceProduct, promotion, token });
 
     try {
         const { data } = res;

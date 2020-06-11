@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useHistory, useLocation, Redirect } from 'react-router-dom';
 // import FacebookLogin from 'react-facebook-login';
 import styled from 'styled-components';
+import { Auth } from '../../Middleware/Auth.Middleware';
 
 //react-redux, action
 import { useDispatch } from 'react-redux';
-import { setLoginFacebook } from '../../Redux/Location/Location.action';
+import { LoginAdmin } from '../../Redux/Login/Login.action';
 
 //icons
 import Back from '../../assets/images/icons/back.svg';
@@ -14,6 +16,7 @@ import Google from '../../assets/images/icons/G-google.svg';
 import Facebook from '../../assets/images/icons/facebook.svg';
 
 //components
+import SignUp from './SignUp.component';
 import CustomInput from '../Customs/CustomInput.component';
 import CustomButton from '../Customs/CustomButton.component';
 
@@ -178,12 +181,26 @@ const Bound = styled.div`
 
 function Login() {
     const dispatch = useDispatch();
+    const history = useHistory();
+    const location = useLocation();
+
+    const { from } = location.state || { from: { pathname: "/admin/products" } };
 
     const [status, setStatus] = useState('login');
     const [login, setLogin] = useState({
         email: '',
         password: ''
     });
+
+    const Authlogin = () => {
+        Auth.authenticate(() => {
+            history.replace(from);
+        });
+    };
+
+    if (Auth.isAuthenticated) {
+        return <Redirect to={"/admin/products"} />
+    }
 
     function onClick(action) {
         setStatus(action);
@@ -221,11 +238,27 @@ function Login() {
 
     function handleKeyUp(e) {
         if (e.keyCode === 13) {
-            dispatch(setLoginFacebook(login));
+            dispatch(LoginAdmin({ email: login.email, password: login.password }))
+            .then(() => {
+                Authlogin();
+                console.log('Loging in successfully');
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Error logging in please try again');
+            });
         }
     }
     function onClickSubmit() {
-        dispatch(setLoginFacebook(login));
+        dispatch(LoginAdmin({ email: login.email, password: login.password }))
+            .then(() => {
+                Authlogin();
+                console.log('Loging in successfully');
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Error logging in please try again');
+            });
     }
 
     return (
@@ -284,19 +317,7 @@ function Login() {
                             <span className="login_container_signup" onClick={() => onClick('register')}>Tạo tài khoản</span>
                         </React.Fragment>
                         : status === "register"
-                            ? <React.Fragment>
-                                <div className="login_container_or">
-                                    <span className="login_container_or_border"></span>
-                                    <span className="login_container_or_or">Nhập thông tin tài khoản</span>
-                                </div>
-                                <CustomInput id="email" type="text" name="email" label="Email hoặc Số điện thoại" />
-                                <CustomInput id="password" type="password" name="password" label="Mật khẩu" />
-                                <CustomInput id="confirm" type="password" name="confirm" label="Nhập lại mật khẩu" />
-                                <CustomInput id="name" type="text" name="name" label="Tên" />
-                                <span className="login_container_qmk tac">Kích hoạt tài khoản</span>
-                                <CustomButton>Tạo tài khoản</CustomButton>
-                                <span className="login_container_signup tar" onClick={() => onClick('login')}>Đăng nhập</span>
-                            </React.Fragment>
+                            ? <SignUp onClick={onClick} />
                             : status === "phone"
                                 ? <React.Fragment>
                                     <div className="login_container_or">

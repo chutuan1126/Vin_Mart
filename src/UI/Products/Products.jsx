@@ -187,7 +187,7 @@ function Products(props) {
     }, [dispatch, location, pageNumber]);
 
     useEffect(() => {
-        if (document.getElementById('product')) {
+        if (document.getElementById('product') === null) {
             window.addEventListener('scroll', () => {
                 if (window.scrollY >= 1) {
                     document.getElementById('product').style.marginTop = "125px";

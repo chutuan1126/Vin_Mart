@@ -44,8 +44,8 @@ function HeaderAdmin() {
                     <li><Link to='/admin/products'>Products</Link></li>
                     <li><Link to='/admin/order'>Order</Link></li>
                     <li><Link to='/admin/addproduct'>Add Product</Link></li>
-                    <li><Link>category 4</Link></li>
-                    <li><Link>category 5</Link></li>
+                    <li><Link to='/'>category 4</Link></li>
+                    <li><Link to='/'>category 5</Link></li>
                 </ul>
             </div>
         </Bound>

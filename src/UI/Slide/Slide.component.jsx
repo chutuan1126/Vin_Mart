@@ -83,7 +83,7 @@ const Bound = styled.div`
 
 function Slide() {
     useEffect(() => {
-        if (document.getElementById('slide')) {
+        if (document.getElementById('slide') === null) {
             window.addEventListener('scroll', () => {
                 if (window.scrollY >= 1) {
                     document.getElementById('slide').style.marginTop = "125px";

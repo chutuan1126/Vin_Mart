@@ -136,7 +136,8 @@ function CardAdmin({ item }) {
     });
 
     function onClickRemove() {
-        dispatch(removeProduct(item._id));
+        const token = sessionStorage.getItem('token');
+        dispatch(removeProduct({id: item._id, token: token}));
     }
 
     function onClickEdit() {
@@ -144,6 +145,8 @@ function CardAdmin({ item }) {
     }
 
     function onClickUpdate() {
+        const token = sessionStorage.getItem('token');
+
         setAction(true);
         dispatch(updateProduct({
             id: item._id,
@@ -151,7 +154,8 @@ function CardAdmin({ item }) {
             proid: value.proid,
             price: value.price,
             faceProduct: value.faceProduct,
-            promotion: value.promotion
+            promotion: value.promotion,
+            token: token
         }));
         setValue({
             name: '',

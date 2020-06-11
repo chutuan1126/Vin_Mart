@@ -2,6 +2,8 @@ import React, { useState, useEffect, memo } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { Auth } from '../../Middleware/Auth.Middleware';
+
 //icons
 import Logo_Big from '../../assets/images/icons/logo_1.svg';
 import Cart_icon from '../../assets/images/icons/cart.svg';
@@ -288,7 +290,8 @@ function Header() {
     const [isShowing, setIsShowing] = useState(true);
     const [toggleShow, setToggleShow] = useState(false);
 
-    const { CartReducer, LocationReducer } = useSelector(state => ({
+    const { LoginReducer, CartReducer, LocationReducer } = useSelector(state => ({
+        LoginReducer: state.LoginReducer,
         CartReducer: state.CartReducer,
         LocationReducer: state.LocationReducer
     }));
@@ -320,8 +323,15 @@ function Header() {
         if (!LocationReducer.Location) return;
 
         setIsShowing(false);
-        setLogin(LocationReducer.Facebook);
     }, [LocationReducer]);
+
+    useEffect(() => {
+        if (!LoginReducer) return;
+        if (!LoginReducer.LoginAdmin) return;
+        if (!LoginReducer.LoginAdmin.loginInfo) return;
+
+        setLogin(LoginReducer.LoginAdmin.loginInfo);
+    }, [LoginReducer]);
 
     useEffect(() => {
         if (!CartReducer) return;
@@ -331,7 +341,7 @@ function Header() {
 
 
     useEffect(() => {
-        if (document.getElementById('header')) {
+        if (document.getElementById('header') === null) {
             window.addEventListener('scroll', () => {
                 if (window.scrollY >= 1) {
                     document.getElementById('header').style.position = "fixed";
@@ -370,10 +380,10 @@ function Header() {
                         {
                             login
                                 ? <React.Fragment>
-                                    <img src={login.userFace} height="40" alt="User_Circle" />
+                                    <img src={User_Circle} height="40" alt="avatar" />
                                     <span>
                                         <p>{login.userName}</p>
-                                        <p>Đăng xuất</p>
+                                        <p onClick={Auth.logOut}>Đăng xuất</p>
                                     </span>
                                 </React.Fragment>
                                 : <React.Fragment>

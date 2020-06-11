@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
+import { Auth } from '../../Middleware/Auth.Middleware';
+
 //components
 import CardAdmin from './CardAdmin/CardAdmin';
 
@@ -26,28 +28,35 @@ const Bound = styled.div`
 function MainAdmin() {
     const dispatch = useDispatch();
 
-    const [data, setData] = useState(null);
+    const [data, setData] = useState([]);
 
     const { AdminReducer } = useSelector(state => ({
         AdminReducer: state.AdminReducer
     }))
 
     useEffect(() => {
-        if(!AdminReducer) return;
-        if(!AdminReducer.AdminProducts) return;
+        if (!AdminReducer) return;
+        if (!AdminReducer.AdminProducts) return;
 
         setData(AdminReducer.AdminProducts);
     }, [AdminReducer]);
 
     useEffect(() => {
-        dispatch(getAdminProducts());
+        if (!Auth) return;
+        if (!Auth.isAuthenticated) return;
+
+        const token = sessionStorage.getItem('token');
+
+        dispatch(getAdminProducts({ token }));
     }, [dispatch]);
+    console.log(Auth.isAuthenticated);
+
     return (
         <Bound>
             <div className="admin_container">
                 {
                     data && data
-                    .map((item, index) => <CardAdmin key={index} item={item} />)
+                        .map((item, index) => <CardAdmin key={index} item={item} />)
                 }
             </div>
         </Bound>
