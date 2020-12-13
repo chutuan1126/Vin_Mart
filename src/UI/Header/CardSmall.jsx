@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import CanhGaCP from '../../assets/images/ImageProducts/canh-ga-cp.jpg';
-
 const Bound = styled.div`
     width: 108px;
     height: 100%;
@@ -32,13 +30,13 @@ const Bound = styled.div`
     }
 `
 
-function CardSmall() {
+function CardSmall({ item }) {
     return (
         <Bound>
             <span>
-                <img src={CanhGaCP} alt="canh-ga-cp" />
+                <img src={item?.images[0]?.url} alt={item?.name} />
             </span>
-            <h4>Dải mềm bò New Zealand 500G</h4>
+            <h4>{item?.name}</h4>
         </Bound>
     )
 }

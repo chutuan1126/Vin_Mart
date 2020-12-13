@@ -9,7 +9,10 @@ import priceDesktopBg from '../../assets/images/ImageProducts/price-desktop-bg.j
 //react-redux, action
 import { useSelector, useDispatch } from 'react-redux';
 import { getSingleProduct } from '../../Redux/Product/Product.action';
-import { addToCart, removeFromCart, updateCart } from '../../Redux/Cart/Cart.action';
+import { updateCart } from '../../Redux/Cart/Cart.action';
+
+//FormatMoney
+import { FormatMoney } from '../../assets/helper/formatMoney';
 
 const Bound = styled.div`
     display: flex;
@@ -184,6 +187,7 @@ const Bound = styled.div`
                     height: 92px;
                     grid-template-columns: 35% 65%;
                     &>button {
+                        cursor: pointer;
                         display: flex;
                         color: #fff;
                         margin: 6px;
@@ -221,9 +225,8 @@ function SingleProduct() {
     const location = useLocation();
 
     const [value, setValue] = useState(0);
-    const [quantity, setQuantity] = useState(0);
     const [product, setProduct] = useState(null);
-    const [imageShow, setImageShow] = useState('https://lh3.googleusercontent.com/eQn3ZFtX5z1TlLFR_hRiGeTq1_UrNeZIJB0zs1CNfbSrsWEtbmHYnq6D3zw5KH-T-Sq4jMNG74AB4dZDYKCQ');
+    const [imageShow, setImageShow] = useState(null);
 
     const { ProductReducer, CartReducer } = useSelector(state => ({
         CartReducer: state.CartReducer,
@@ -231,57 +234,49 @@ function SingleProduct() {
     }));
 
     function onKeyUpEnter(e) {
-        const value = e.target.value;
-
+        const val = e.target.value;
         if (e.keyCode === 13) {
-            if (value === 0) {
+            if (val <= 0) {
                 setValue(0);
-                dispatch(removeFromCart(product._id));
             } else {
-                dispatch(updateCart(product._id, value));
+                setValue(val);
             }
         }
     }
 
-    function onChange(e) {
-        const value = e.target.value;
-        setValue(value);
-    }
-
-    function onClickAddToCart(action) {
+    function onChange(e, action) {
         if (action === 'sub') {
-            if (quantity === 0) return;
-            quantity === 1 && setValue(0);
-            quantity === 1 ? dispatch(removeFromCart(product._id)) : dispatch(updateCart(product._id));
+            if (value === 0) return;
+            setValue(value - 1);
+        } else if (action === 'add') {
+            setValue(value + 1);
         } else {
-            dispatch(addToCart(product._id));
+            const val = e.target.value;
+            setValue(val);
         }
     }
 
-    useEffect(() => {
-        if (window.onload) {
-            window.scrollTo(0, 0);
-        }
-    });
+    function onClickAddToCart() {
+        dispatch(updateCart(product.id, value));
+    }
 
     useEffect(() => {
         if (!CartReducer) return;
         if (!CartReducer.Cart) return;
 
-        CartReducer.Cart
-            .filter(i => i.productId._id === location.pathname.split('/')[2])
-            .map(i => {
-                setValue(i.quantity);
-                setQuantity(i.quantity);
-                return i;
-            });
+        const product = CartReducer.Cart.find(i => toString(i.data.id) === toString(location.pathname.split('/')[2]));
+        console.log(product);
+        if (product) {
+            setValue(product.quantity);
+        }
     }, [CartReducer, location]);
 
     useEffect(() => {
         if (!ProductReducer) return;
-        if (!ProductReducer.SingleProduct) return;
+        if (!ProductReducer.DetailProduct) return;
 
-        setProduct(ProductReducer.SingleProduct);
+        setProduct(ProductReducer.DetailProduct);
+        setImageShow(ProductReducer.DetailProduct?.images[0]?.url);
     }, [ProductReducer]);
 
     useEffect(() => {
@@ -291,7 +286,7 @@ function SingleProduct() {
     return (
         <Bound>
             <div className="single_product">
-                <h3 className="single_product_title">Trang chủ > Sữa đậu nành gấp đôi canxi Vinamilk túi 220ml</h3>
+                <h3 className="single_product_title">Trang chủ 	&gt; {product?.name}</h3>
                 <div className="single_product_content">
                     <div className="single_product_content_left">
                         <div className="single_product_content_left_image">
@@ -299,27 +294,23 @@ function SingleProduct() {
                         </div>
                         <div className="single_product_content_left_card">
                             <div className="single_product_content_left_card_slide">
-                                <span className="img" onMouseEnter={() => setImageShow('https://lh3.googleusercontent.com/eQn3ZFtX5z1TlLFR_hRiGeTq1_UrNeZIJB0zs1CNfbSrsWEtbmHYnq6D3zw5KH-T-Sq4jMNG74AB4dZDYKCQ')}>
-                                    <img src="https://lh3.googleusercontent.com/eQn3ZFtX5z1TlLFR_hRiGeTq1_UrNeZIJB0zs1CNfbSrsWEtbmHYnq6D3zw5KH-T-Sq4jMNG74AB4dZDYKCQ" width="70" height="70" alt="Single Product" />
-                                </span>
-                                <span className="img" onMouseEnter={() => setImageShow("https://lh3.googleusercontent.com/_VGfgc5JDN1Aasweos0XaLo_XfkrH4zxp3Ogj_bGJ0mHsprV5yHUjZcY4q51xP15lwG3b-S2E2RWVnzsqw")}>
-                                    <img src="https://lh3.googleusercontent.com/_VGfgc5JDN1Aasweos0XaLo_XfkrH4zxp3Ogj_bGJ0mHsprV5yHUjZcY4q51xP15lwG3b-S2E2RWVnzsqw" width="70" height="70" alt="Single Product" />
-                                </span>
-                                <span className="img" onMouseEnter={() => setImageShow("https://lh3.googleusercontent.com/6Eh0vksg_AydCNhcDT_VKBrzW_0HIjBWOIzBsOw0svQi9J0Ay3PzujznWTfYz1ljYP-y6QvNEkbn8iiiQg")}>
-                                    <img src="https://lh3.googleusercontent.com/6Eh0vksg_AydCNhcDT_VKBrzW_0HIjBWOIzBsOw0svQi9J0Ay3PzujznWTfYz1ljYP-y6QvNEkbn8iiiQg" width="70" height="70" alt="Single Product" />
-                                </span>
+                                {product && product?.images.map((item, key) => (
+                                    <span key={key} className="img" onMouseEnter={() => setImageShow(item.url)}>
+                                        <img src={item.url} width="70" height="70" alt="Single Product" />
+                                    </span>
+                                ))}
                             </div>
                         </div>
                     </div>
                     <div className="single_product_content_right">
                         <div className="single_product_content_right_one">
-                            {product && <h1>{product.name}</h1>}
-                            <h3>SKU: 10617957</h3>
+                            {product && <h1>{product?.name}</h1>}
+                            <h3>SKU: {product?.sku}</h3>
                         </div>
                         <div className="single_product_content_right_two">
                             <span>
                                 <h3>Giá bán lẻ</h3>
-                                <p>76.770đ</p>
+                                <p>{FormatMoney(product?.price?.sellPrice)}</p>
                             </span>
                             <span>
                                 <h3>Tình trạng sản phẩm</h3>
@@ -336,14 +327,14 @@ function SingleProduct() {
                         <div className="single_product_content_right_four">
                             <h3>Chọn số lượng</h3>
                             <span>
-                                <button onClick={() => onClickAddToCart('sub')}>-</button>
+                                <button onClick={(e) => onChange(e, 'sub')}>-</button>
                                 <input type="text" name="count" onChange={onChange} onKeyUp={onKeyUpEnter} value={value} />
-                                <button onClick={() => onClickAddToCart('add')}>+</button>
+                                <button onClick={(e) => onChange(e, 'add')}>+</button>
                             </span>
                         </div>
                         <div className="single_product_content_right_five">
-                            <button>mua ngay</button>
-                            <button>
+                            <button onClick={onClickAddToCart}>mua ngay</button>
+                            <button onClick={onClickAddToCart}>
                                 <img src={Cart_Red} alt="cart" />
                                 <span>thêm vào giỏ hàng</span>
                             </button>

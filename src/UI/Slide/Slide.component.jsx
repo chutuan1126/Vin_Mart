@@ -1,5 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+
+const images = {
+    1: require('../../assets/images/sale/sale_image_1.jpg'),
+    2: require('../../assets/images/sale/sale_image_2.png'),
+    3: require('../../assets/images/sale/sale_image_3.png'),
+    4: require('../../assets/images/sale/sale_image_4.png'),
+    5: require('../../assets/images/sale/sale_image_5.png'),
+    6: require('../../assets/images/sale/sale_image_6.png'),
+    7: require('../../assets/images/sale/sale_image_7.png'),
+}
 
 const Bound = styled.div`
     width: 100%;
@@ -10,6 +20,7 @@ const Bound = styled.div`
         width: 1180px;
         height: 400px;
         margin-top: 5px;
+        overflow: hidden;
         img {
             width: 100%;
             height: 100%;
@@ -17,6 +28,7 @@ const Bound = styled.div`
         }
         .arrow-left, .arrow-right {
             position: absolute;
+            z-index: 10;
             top: 50%;
             width: 24px;
             height: 40px;
@@ -61,6 +73,13 @@ const Bound = styled.div`
             border-top: 3px solid rgba(255,255,255,.5);
             border-right: 3px solid rgba(255,255,255,.5);
         }
+        .slide_container {
+            position: absolute;
+            display: flex;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
     }
     .btn-slide {
         display: flex;
@@ -82,6 +101,16 @@ const Bound = styled.div`
 `
 
 function Slide() {
+    const [image, setImage] = useState(1);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (image >= 7 || image <= 0) setImage(1);
+            else setImage(image + 1);
+        }, 2000);
+        return () => clearTimeout(timer);
+    });
+
     useEffect(() => {
         if (document.getElementById('slide') === null) {
             window.addEventListener('scroll', () => {
@@ -94,6 +123,7 @@ function Slide() {
             });
         }
     }, []);
+    
     return (
         <Bound id="slide">
             <div className="slide-wrapper">
@@ -103,7 +133,11 @@ function Slide() {
                 <span className="arrow-right">
                     <i className="arrow-right-icon"></i>
                 </span>
-                <img src="https://storage.googleapis.com/teko-gae.appspot.com/media/image/2020/4/20/20200420_f271e38f-3649-45e1-aa2e-387943eec7fe.jpe" alt="slide images" />
+                <div style={{ left: `-${image * 100 - 100}%`, transition: image !== 1 ? 'all 1s ease 0s' : 'none' }} className="slide_container">
+                    {Object.keys(images).map((item, key) => (
+                        <img key={key} src={images[item]} alt="slide images" />
+                    ))}
+                </div>
             </div>
             <div className="btn-slide">
                 <span>Bạn cứ ngồi yên, VinMart sẽ tới!</span>

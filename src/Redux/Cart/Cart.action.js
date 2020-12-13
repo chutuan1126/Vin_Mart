@@ -21,20 +21,20 @@ export const getCart = () => async dispatch => {
     }
 }
 
-export const addToCart = idProduct => async dispatch => {
+export const addToCart = item => async dispatch => {
 
-    const api = `http://localhost:8080/cart/addtocart`;
+    // const api = `http://localhost:8080/cart/addtocart`;
 
-    const res = await axios.post(api, { id: idProduct });
+    // const res = await axios.post(api, { id: item });
 
     try {
-        const { data } = res;
-        if (data) {
-            dispatch({
-                type: types.ADD_TO_CART,
-                data: data
-            });
-        }
+        // const { data } = res;
+        // if (data) {
+        dispatch({
+            type: types.ADD_TO_CART,
+            item
+        });
+        // }
     }
     catch (err) {
         console.log(err);
@@ -43,18 +43,18 @@ export const addToCart = idProduct => async dispatch => {
 
 export const removeFromCart = idProduct => async dispatch => {
 
-    const api = `http://localhost:8080/cart/removecart`;
+    // const api = `http://localhost:8080/cart/removecart`;
 
-    const res = await axios.post(api, { id: idProduct });
+    // const res = await axios.post(api, { id: idProduct });
 
     try {
-        const { data } = res;
-        if (data) {
-            dispatch({
-                type: types.REMOVE_CART,
-                data: data
-            });
-        }
+        // const { data } = res;
+        // if (data) {
+        dispatch({
+            type: types.REMOVE_CART,
+            idProduct
+        });
+        // }
     }
     catch (err) {
         console.log(err);
@@ -62,27 +62,34 @@ export const removeFromCart = idProduct => async dispatch => {
 }
 
 export const updateCart = (idProduct, quantity) => async dispatch => {
-    const api = `http://localhost:8080/cart/updatecart`;
+    // const api = `http://localhost:8080/cart/updatecart`;
 
-    const res = await axios.post(api, { id: idProduct, quantity: quantity });
+    // const res = await axios.post(api, { id: idProduct, quantity: quantity });
 
     try {
-        const { data } = res;
-        if (data) {
-            dispatch({
-                type: types.UPDATE_CART,
-                data: data
-            });
-        }
+        // const { data } = res;
+        // if (data) {
+        dispatch({
+            type: types.UPDATE_CART,
+            idProduct,
+            quantity
+        });
+        // }
     }
     catch (err) {
         console.log(err);
     }
 }
 
-export const addWatched = idProduct => async dispatch => {
+export const addWatched = item => async dispatch => {
     dispatch({
         type: types.WATCHED_PRODUCT,
-        idProduct
+        item
+    });
+}
+
+export const clearCart = () => async dispatch => {
+    dispatch({
+        type: types.CLEAR_CART
     });
 }

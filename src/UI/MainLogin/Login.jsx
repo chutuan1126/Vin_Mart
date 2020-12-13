@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory, useLocation, Redirect } from 'react-router-dom';
+import { useHistory, useLocation, Redirect, Link } from 'react-router-dom';
 // import FacebookLogin from 'react-facebook-login';
 import styled from 'styled-components';
 import { Auth } from '../../Middleware/Auth.Middleware';
@@ -271,7 +271,7 @@ function Login() {
                             <img src={Back} width="24" height="24" alt="back" />
                         </span>
                     }
-                    <img src={Logo} height="72" alt="Logo" />
+                    <Link to="/"><img src={Logo} height="72" alt="Logo" /></Link>
                     <h1>{status === "register" ? "Tạo tài khoản" : "Đăng nhập"}</h1>
                 </div>
                 {

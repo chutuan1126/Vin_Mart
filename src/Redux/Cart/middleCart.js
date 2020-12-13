@@ -1,15 +1,23 @@
-export const editCart = (state, obj) => {
-    if (obj.amount === 0) {
-        return state.Cart.filter(item => item.idProduct !== obj.idProduct);
-    }
+export const addToCart = (Cart, obj) => {
+    const product = Cart.find(item => item.data.id === obj.id);
+    const index = Cart.findIndex(item => item.data.id === obj.id);
 
-    const index = state.Cart.findIndex(item => item.idProduct === obj.idProduct);
-    return [
-        ...state.Cart.slice(0, index),
-        {
-            ...state.Cart[index],
-            amount: obj.amount
-        },
-        ...state.Cart.slice(index + 1)
-    ];
+    if (product === undefined) {
+        return [
+            ...Cart,
+            {
+                data: obj,
+                quantity: 1
+            },
+        ]
+    } else {
+        return [
+            ...Cart.slice(0, index),
+            {
+                data: product.data,
+                quantity: product.quantity + 1
+            },
+            ...Cart.slice(index + 1)
+        ];
+    }
 }

@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+
+//react-redux, action
+import { useSelector, useDispatch } from 'react-redux';
+import { getDataHome, refreshData } from '../../Redux/Product/Product.action';
 
 //components
 import Card from './Card.component';
@@ -123,9 +127,15 @@ const Bound = styled.div`
     }
 `
 
-function CardSlide({ data, type, title, allProduct }) {
+function CardSlide({ categorys, cate, all }) {
+    const dispatch = useDispatch();
+    const [data, setData] = useState(null);
     const [dataSlide, setDataSlide] = useState(5);
     const [nextShow, setNextShow] = useState(true);
+
+    const { ProductReducer } = useSelector(state => ({
+        ProductReducer: state.ProductReducer
+    }));
 
     function onPreNext(action) {
         if (action === "next") {
@@ -136,12 +146,31 @@ function CardSlide({ data, type, title, allProduct }) {
         }
     }
 
+    useEffect(() => {
+        if (!ProductReducer) return;
+        if (!ProductReducer.Products) return;
+        if (!ProductReducer.Products?.[cate.id]) return;
+        setData(ProductReducer.Products?.[cate.id]);
+    }, [ProductReducer, cate]);
+
+    useEffect(() => {
+        if(!cate.code) return;
+        dispatch(getDataHome({ id: cate.id, code: cate.code, size: 10 }));
+
+        return () => dispatch(refreshData());
+    }, [dispatch, cate]);
+
     return (
         <Bound dataSlide={dataSlide} nextShow={nextShow}>
-            <h1 className="card_title_main">{title}</h1>
-            <div className={allProduct ? "card_content_main hAuto" : "card_content_main"}>
+            <h1 className="card_title_main">{cate.title}</h1>
+            <div className={all ? "card_content_main hAuto" : "card_content_main"}>
+                {!all && data && <span
+                    className={nextShow ? "btn_next" : "btn_pre"}
+                    onClick={() => onPreNext(nextShow ? 'next' : 'pre')}>
+                    <img src={arrow} alt={nextShow ? 'next' : 'pre'} />
+                </span>}
                 {
-                    allProduct
+                    all
                         ? <div className="card_content_main_carousel hAuto">
                             <figure className="card_content_main_carousel_figure no_carousel_figure">
                                 {
@@ -150,28 +179,17 @@ function CardSlide({ data, type, title, allProduct }) {
                                 }
                             </figure>
                         </div>
-                        : <React.Fragment>
-                            {
-                                nextShow === false
-                                ? <span className="btn_pre" onClick={() => onPreNext('pre')}>
-                                    <img src={arrow} alt="pre" />
-                                </span>
-                                : <span className="btn_next" onClick={() => onPreNext('next')}>
-                                    <img src={arrow} alt="next" />
-                                </span>
-                            }
-                            <div className="card_content_main_carousel">
-                                <figure id="scroll" className={!nextShow ? "card_content_main_carousel_figure next" : "card_content_main_carousel_figure"}>
-                                    {
-                                        data && data.filter((item, index) => index < dataSlide)
-                                            .map((item, index) => <Card key={index} item={item} />)
-                                    }
-                                </figure>
-                            </div>
-                        </React.Fragment>
+                        : <div className="card_content_main_carousel">
+                            <figure id="scroll" className={!nextShow ? "card_content_main_carousel_figure next" : "card_content_main_carousel_figure"}>
+                                {
+                                    data && data.filter((item, index) => index < dataSlide)
+                                        .map((item, index) => <Card key={index} item={item} />)
+                                }
+                            </figure>
+                        </div>
                 }
                 <div className="card_content_main_btn">
-                    <Link to={`/products/${type}/p=1`}><button>Xem tất cả</button></Link>
+                    <Link to={`/products/${cate.id}/p=1`}><button>Xem tất cả</button></Link>
                 </div>
             </div>
         </Bound>

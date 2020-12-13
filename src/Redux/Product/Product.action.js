@@ -1,17 +1,18 @@
 import * as types from './Product.type';
 import axios from 'axios';
 
-export const getDataHome = () => async dispatch => {
-    const api = "http://localhost:8080/product/getproduct/home";
+export const getDataHome = (params) => async dispatch => {
+    const api = "http://localhost:8080/product/getproduct";
 
-    const res = await axios.post(api, {});
+    const res = await axios.post(api, { ...params });
 
     try {
         const { data } = res;
         if (data) {
             dispatch({
                 type: types.GET_DATA_HOME,
-                data
+                data: { [params.id]: data.data },
+                all: [...data.data]
             });
         }
     }
@@ -20,17 +21,18 @@ export const getDataHome = () => async dispatch => {
     }
 }
 
-export const getDataOfType = ({ type, pageNumber }) => async dispatch => {
-    const api = `http://localhost:8080/product/getproduct/${type}`;
+export const getDataOfType = ({ pageNumber, code }) => async dispatch => {
+    const api = "http://localhost:8080/product/getproduct";
 
-    const res = await axios.post(api, { pageNumber: pageNumber });
+    const res = await axios.post(api, { pageNumber, code, size: 20 });
 
     try {
         const { data } = res;
         if (data) {
             dispatch({
                 type: types.GET_DATA_OF_TYPE,
-                data: data
+                data: data.data,
+                total: data.total
             });
         }
     }
@@ -40,15 +42,16 @@ export const getDataOfType = ({ type, pageNumber }) => async dispatch => {
 }
 
 export const getSingleProduct = id => async dispatch => {
-    const api = `http://localhost:8080/product/getproduct/singleproduct/${id}`;
-    const res = await axios.post(api, {});
+    const api = `http://localhost:8080/product/singleproduct`;
+    const res = await axios.post(api, { id });
 
     try {
         const { data } = res;
+        console.log(data);
         if (data) {
             dispatch({
                 type: types.GET_DATA_SINGLE_PRODUCT,
-                data: data[0]
+                data
             });
         }
     }

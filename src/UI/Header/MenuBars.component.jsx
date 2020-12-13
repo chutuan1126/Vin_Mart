@@ -50,17 +50,14 @@ const Bound = styled.ul`
     }
 `
 
-function MenuBars() {
+function MenuBars({ categorys }) {
     return (
         <Bound className="list_items">
-            <Link to="/products/Meal/p=1"><li className="menu_item">Thịt - Cá - Trứng</li></Link>
-            <Link to="/products/Vegetable/p=1"><li className="menu_item">Rau - Củ - Quả</li></Link>
-            <Link to="/products/Spice/p=1"><li className="menu_item">Gia vị</li></Link>
-            <Link to="/products/DryFood/p=1"><li className="menu_item">Thực phẩm khô</li></Link>
-            <Link to="/products/Drinks/p=1"><li className="menu_item">Đồ uống - Giải khát</li></Link>
-            <Link to="/products/Milk/p=1"><li className="menu_item">Sữa</li></Link>
-            <Link to="/products/chemical/p=1"><li className="menu_item">Hóa phẩm</li></Link>
-            <Link to="/products/Care/p=1"><li className="menu_item">Chăm sóc cá nhân</li></Link>
+            {categorys
+                .filter(item => item.id !== 'all')
+                .map((item, key) => (
+                    <Link key={key} to={`/products/${item.id}/p=1`}><li className="menu_item">{item.title}</li></Link>
+                ))}
         </Bound>
     )
 }

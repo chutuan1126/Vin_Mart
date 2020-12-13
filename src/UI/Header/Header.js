@@ -20,7 +20,6 @@ import Modal from '../Modal/Modal';
 
 //react-redux
 import { useDispatch, useSelector } from 'react-redux';
-import { getCart } from '../../Redux/Cart/Cart.action';
 
 //FormatMoney
 import { FormatMoney } from '../../assets/helper/formatMoney';
@@ -186,27 +185,33 @@ const Bound = styled.div`
                         display: flex;
                         align-items: center;
                         justify-content: space-between;
-                        button:nth-child(1) {
-                            cursor: pointer;
-                            display: block;
-                            color: #d42333;
-                            outline: none;
-                            margin: 5px;
-                            font-size: 13px;
-                            padding: 4px 30px;
-                            background-color: #fff;
-                            border: 1px solid #d42333;
+                        a:nth-child(1) {
+                            text-decoration: none;
+                            &>button {
+                                cursor: pointer;
+                                display: block;
+                                color: #d42333;
+                                outline: none;
+                                margin: 5px;
+                                font-size: 13px;
+                                padding: 4px 30px;
+                                background-color: #fff;
+                                border: 1px solid #d42333;
+                            }
                         }
-                        button:nth-child(2) {
-                            cursor: pointer;
-                            display: block;
-                            outline: none;
-                            border: none;
-                            margin: 5px;
-                            color: #fff;
-                            font-size: 13px;
-                            padding: 5px 30px;
-                            background: #d42333;
+                        a:nth-child(2) {
+                            text-decoration: none;
+                            &>button {
+                                cursor: pointer;
+                                display: block;
+                                outline: none;
+                                border: none;
+                                margin: 5px;
+                                color: #fff;
+                                font-size: 13px;
+                                padding: 5px 30px;
+                                background: #d42333;
+                            }
                         }
                     }
                 }
@@ -265,11 +270,13 @@ const Bound = styled.div`
             align-items: center;
             justify-content: center;
             box-shadow: 0 0 10px 0 #bbb;
+            z-index: 9999;
             &_container {
                 overflow: hidden;
                 overflow-x: scroll;
                 width: 1180px;
                 height: 100%;
+                z-index: 999;
                 ::-webkit-scrollbar {
                     display: none;
                 }
@@ -282,11 +289,12 @@ const Bound = styled.div`
     }
 `
 
-function Header() {
+function Header({ categorys }) {
     const dispatch = useDispatch();
     const [count, setCount] = useState(0);
     const [login, setLogin] = useState(null);
     const [newItem, setNewItem] = useState('');
+    const [watched, setWatched] = useState(null);
     const [isShowing, setIsShowing] = useState(true);
     const [toggleShow, setToggleShow] = useState(false);
 
@@ -295,6 +303,10 @@ function Header() {
         CartReducer: state.CartReducer,
         LocationReducer: state.LocationReducer
     }));
+
+    useEffect(() => {
+        setWatched(CartReducer.Watched);
+    }, [CartReducer])
 
     function onChangeSearch(e) {
         setNewItem(e.target.value.trim());
@@ -307,7 +319,7 @@ function Header() {
         let sum = 0;
         if (CartReducer && CartReducer.Cart) {
             for (let i = 0; i < CartReducer.Cart.length; i++) {
-                sum += Number(CartReducer.Cart[i].productId.price) * Number(CartReducer.Cart[i].quantity);
+                sum += Number(CartReducer.Cart[i].data.price?.sellPrice) * Number(CartReducer.Cart[i]?.quantity);
             }
         };
 
@@ -315,7 +327,7 @@ function Header() {
     }
 
     useEffect(() => {
-        dispatch(getCart());
+        // dispatch(getCart());
     }, [dispatch]);
 
     useEffect(() => {
@@ -341,24 +353,23 @@ function Header() {
 
 
     useEffect(() => {
-        if (document.getElementById('header') === null) {
-            window.addEventListener('scroll', () => {
-                if (window.scrollY >= 1) {
-                    document.getElementById('header').style.position = "fixed";
-                }
-                if (window.scrollY === 0) {
-                    document.getElementById('header').style.position = "static";
-                }
-                if (window.scrollY >= 475) {
-                    document.getElementById('img').style.height = "38px";
-                    document.getElementById('navId').style.height = "50px";
-                }
-                if (window.scrollY <= 475) {
-                    document.getElementById('img').style.height = "58px";
-                    document.getElementById('navId').style.height = "80px";
-                }
-            });
-        }
+        window.addEventListener('scroll', () => {
+            setToggleShow(false);
+            if (window.scrollY >= 1) {
+                document.getElementById('header').style.position = "sticky";
+            }
+            if (window.scrollY === 0) {
+                document.getElementById('header').style.position = "static";
+            }
+            if (window.scrollY >= 475) {
+                document.getElementById('img').style.height = "38px";
+                document.getElementById('navId').style.height = "50px";
+            }
+            if (window.scrollY <= 475) {
+                document.getElementById('img').style.height = "58px";
+                document.getElementById('navId').style.height = "80px";
+            }
+        }, false);
     }, []);
 
     return (
@@ -413,8 +424,8 @@ function Header() {
                                     <span>Tổng tiền: <b>{FormatMoney(totalMoney())}đ</b></span>
                                 </div>
                                 <div className="box_cart_btn">
-                                    <button>Xem chi tiết</button>
-                                    <button>Thanh toán ngay</button>
+                                    <Link to={`/cart`}><button>Xem chi tiết</button></Link>
+                                    <Link to={`/login`}><button>Thanh toán ngay</button></Link>
                                 </div>
                             </div>
                         }
@@ -431,7 +442,7 @@ function Header() {
                 <div className="header_menubars_bottom">
                     <div className="header_menubars_bottom_left">
                         <img src={Menu_Bars} width="20" height="20" alt="Menu_Bars" />Danh mục sản phẩm
-                        <MenuBars />
+                        <MenuBars categorys={categorys} />
                     </div>
                     <div className="header_menubars_bottom_right">
                         <span className="header_menubars_bottom_right_title" onClick={() => setToggleShow(!toggleShow)}>
@@ -446,9 +457,9 @@ function Header() {
                     toggleShow && <div className="show_watched">
                         <div className="show_watched_container">
                             <div className="show_watched_container_wrapper">
-                                {
-                                    <CardSmall />
-                                }
+                                {watched && watched.map((item, key) => (
+                                    <CardSmall key={key} item={item} />
+                                ))}
                             </div>
                         </div>
                     </div>

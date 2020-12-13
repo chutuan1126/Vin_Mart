@@ -2,6 +2,9 @@ import React, { useState, useEffect, memo } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 
 import styled from 'styled-components';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import Pagination from '@material-ui/lab/Pagination';
+import PaginationItem from '@material-ui/lab/PaginationItem';
 
 //components
 import GridProduct from './GridProduct';
@@ -10,8 +13,6 @@ import GridProduct from './GridProduct';
 import Sort from '../../assets/images/icons/sort.svg';
 import Grid from '../../assets/images/icons/grid.svg';
 import GridCol from '../../assets/images/icons/grid-col.svg';
-import arrow_bottom from '../../assets/images/icons/arrow_bottom.svg';
-
 
 //react-redux, action
 import { useSelector, useDispatch } from 'react-redux';
@@ -83,108 +84,57 @@ const Bound = styled.div`
             }
             &_panigation {
                 margin-bottom: 20px;
-                margin-top: 50px;
+                margin-top: 24px;
                 display: flex;
                 align-items: center;
                 justify-content:  center;
-                a {
-                    text-decoration: none;
-                }
-                button {
-                    cursor: pointer;
-                    outline: none;
-                    border: none;
-                    display: flex;
-                    align-items: center;
-                    justify-content:  center;
-                    background-color: transparent;
-                }
-                .opacity {
-                    opacity: .3;
-                }
-                .left {
-                    margin-right: 5px;
-                    border-radius: 25px;
-                    transform: rotate(90deg);
-                    box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-                }
-                .right {
-                    margin-left: 5px;
-                    border-radius: 25px;
-                    transform: rotate(-90deg);
-                    box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-                }
-                & .panigation {
-                    display: flex;
-                    align-items: center;
-                    justify-content:  center;
-                    margin: 0 7px;
-                    width: 34px;
-                    height: 34px;
-                    color: #000;
-                    padding: 0 5px;
-                    font-size: 14px;
-                    border-radius: 34px;
-                    background-color: #fff;
-                    box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-                    &.active {
-                        color: #fff;
-                        border-color: #2d3877;
-                        background-color: #2d3877;
-                    }
-                }
             }
         }
     }
 `
 
-function Products(props) {
+const useStyles = makeStyles((theme) => ({
+    root: {
+        '& > *': {
+            marginTop: theme.spacing(2),
+        },
+    },
+}));
+
+function Products({ categorys }) {
+    const classes = useStyles();
     const dispatch = useDispatch();
     const location = useLocation();
 
-    const [data, setData] = useState([]);
-    const [total, setTotal] = useState([]);
-    const [local, setLocal] = useState(null);
-    const [pageNumber, setPageNumber] = useState(location.pathname.split('=')[1]);
+    const [page, setPage] = useState(parseInt(location.pathname.split('=')[1]));
+    const [data, setData] = useState(null);
+    const [total, setTotal] = useState(0);
 
     const { ProductReducer } = useSelector(state => ({
         ProductReducer: state.ProductReducer
     }));
 
-    function onClickPageNumber(action) {
-        if (action === "pre") {
-            setPageNumber(Number(pageNumber) - 1);
-        }
-        if (action === "next") {
-            setPageNumber(Number(pageNumber) + 1);
-        }
+    function handleChange(event, value) {
+        setPage(value);
     }
 
     useEffect(() => {
-        if (window.onload) {
-            window.scrollTo(0, 0);
-        }
-        return () => {
-            window.scrollTo(0, 0);
-            setPageNumber(location.pathname.split('=')[1]);
-        }
-    });
-
-    useEffect(() => {
         if (!ProductReducer) return;
-        if (!ProductReducer.Products) return;
+        if (!ProductReducer.SingleProduct) return;
+        if (!ProductReducer.SingleProduct.data) return;
 
-        setData(ProductReducer.Products.data);
-        setTotal(ProductReducer.Products.total);
+        setData(ProductReducer.SingleProduct.data);
+        setTotal(ProductReducer.SingleProduct.total);
     }, [ProductReducer]);
 
     useEffect(() => {
+        dispatch(getDataOfType({
+            pageNumber: page,
+            code: categorys.find(item => item.id === location.pathname.split('/')[2])?.code
+        }));
 
-        dispatch(getDataOfType({ type: location.pathname.split('/')[2], pageNumber: pageNumber }));
-
-        setLocal(location.pathname.split('/')[2]);
         return () => dispatch(refreshData());
-    }, [dispatch, location, pageNumber]);
+    }, [dispatch, location, page, categorys]);
 
     useEffect(() => {
         if (document.getElementById('product') === null) {
@@ -195,7 +145,7 @@ function Products(props) {
                 if (window.scrollY === 0) {
                     document.getElementById('product').style.marginTop = "0";
                 }
-            });
+            }, false);
         }
     }, []);
 
@@ -220,30 +170,23 @@ function Products(props) {
                         data && <GridProduct data={data} />
                     }
                     <div className="product_content_grid_panigation">
-                        {
-                            pageNumber > 1
-                                ? <Link to={`${location.pathname.split('=')[0]}=${Number(pageNumber) - 1}`}>
-                                    <button onClick={() => onClickPageNumber('pre')}><img className="left" src={arrow_bottom} width="25" height="25" alt="left" /></button>
-                                </Link>
-                                : <button><img className="left opacity" src={arrow_bottom} width="25" height="25" alt="left" /></button>
-                        }
-                        {
-                            data && data
-                                .filter((item, index) => index < (total % 20 === 0 ? (Math.floor(total / 20)) : (Math.floor(total / 20) + 1)))
-                                .map((item, index) => <Link key={index} to={`/products/${local}/p=${index + 1}`}>
-                                    <button
-                                        className={Number(pageNumber) === (index + 1) ? "panigation active" : "panigation"}
-                                        onClick={() => setPageNumber(index + 1)}>{index + 1}
-                                    </button>
-                                </Link>)
-                        }
-                        {
-                            pageNumber < (total % 20 === 0 ? (Math.floor(total / 20)) : (Math.floor(total / 20) + 1))
-                                ? <Link to={`${location.pathname.split('=')[0]}=${Number(pageNumber) + 1}`}>
-                                    <button onClick={() => onClickPageNumber('next')}><img className="right" src={arrow_bottom} width="25" height="25" alt="right" /></button>
-                                </Link>
-                                : <button><img className="right opacity" src={arrow_bottom} width="25" height="25" alt="right" /></button>
-                        }
+                        <div className={classes.root}>
+                            <Pagination
+                                color='primary'
+                                page={page}
+                                size="large"
+                                defaultPage={1}
+                                onChange={handleChange}
+                                count={Math.floor(total / 20) + (total / 20 !== 0 ? 1 : 0)}
+                                renderItem={(item) => (
+                                    <PaginationItem
+                                        component={Link}
+                                        to={`${location.pathname.split('=')[0]}=${item.page}`}
+                                        {...item}
+                                    />
+                                )}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

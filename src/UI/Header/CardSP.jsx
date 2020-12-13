@@ -46,12 +46,12 @@ const Bound = styled.div`
 function CardSP({ item }) {
     return (
         <Bound>
-            <img className="card_img" src={item.productId.faceProduct} alt="canh-ga-cp" />
+            <img className="card_img" src={item.data?.images[0]?.url} alt={item.data?.name} />
             <div className="card_content">
-                <span className="card_content_top">{item.productId.name}</span>
+                <span className="card_content_top">{item.data?.name}</span>
                 <div className="card_content_bottom">
-                    <span>x{item.quantity}</span>
-                    <span>{FormatMoney(item.productId.price)}đ</span>
+                    <span>x{item?.quantity}</span>
+                    <span>{FormatMoney(item.data?.price?.sellPrice)}đ</span>
                 </div>
             </div>
         </Bound>

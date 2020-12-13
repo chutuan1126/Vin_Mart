@@ -10,6 +10,8 @@ import { addToCart, updateCart, removeFromCart, addWatched } from '../../Redux/C
 //FormatMoney
 import { FormatMoney } from '../../assets/helper/formatMoney';
 
+const imgDefault = require('../../assets/images/ImageProducts/default.jpg');
+
 const Bound = styled.div`
     width: ${props => props.width ? props.width : "222px"};
     height: ${props => props.width ? "362px" : "380px"};
@@ -153,6 +155,7 @@ const Bound = styled.div`
 function Card({ item, width }) {
     const dispatch = useDispatch();
     const [cart, setCart] = useState(0);
+    const [loaded, setLoaded] = useState(false);
 
     const { CartReducer } = useSelector(state => ({
         CartReducer: state.CartReducer
@@ -160,24 +163,28 @@ function Card({ item, width }) {
 
     function clickAddToCart() {
         setCart(cart + 1);
-        dispatch(addToCart(item._id));
+        dispatch(addToCart(item));
     }
     function editToCart(action) {
         if (action === "sub") {
             if (cart === 1) {
                 setCart(0);
-                dispatch(removeFromCart(item._id));
+                dispatch(removeFromCart(item.id));
             } else {
                 setCart(cart - 1);
-                dispatch(updateCart(item._id));
+                dispatch(updateCart(item.id));
             }
         } else {
             setCart(cart + 1);
-            dispatch(addToCart(item._id));
+            dispatch(addToCart(item));
         }
     }
     function onClickAddWatched() {
-        dispatch(addWatched(item._id));
+        dispatch(addWatched(item));
+    }
+
+    function onload() {
+        setLoaded(true);
     }
 
     useEffect(() => {
@@ -185,33 +192,34 @@ function Card({ item, width }) {
         if (!CartReducer.Cart) return;
 
         if (window.location) {
-            const prod = CartReducer.Cart.filter(i => i.productId._id === item._id);
+            const prod = CartReducer.Cart.filter(i => i.data.id === item.id);
 
-            prod.length ? setCart(prod[0].quantity) : setCart(0);
+            prod.length ? setCart(prod[0]?.quantity) : setCart(0);
         }
     }, [CartReducer, item]);
 
     return (
         <Bound width={width}>
-            <Link to={`/product/${item._id}`}>
+            <Link to={`/product/${item.id}`}>
                 <div className="cart-content" onClick={onClickAddWatched}>
                     <div className="card-image">
                         {
-                            Number(item.promotion) > 0 && <span className="card-image-promotion">-{item.promotion > 1000
-                                ? Math.floor(item.promotion / 1000)
-                                : Math.floor(item.promotion)}{item.promotion > 1000 && "k"}</span>
+                            item?.price?.sellPrice !== item?.price?.supplierSalePrice
+                            && <span className="card-image-promotion">
+                                {Math.floor((item?.price?.sellPrice - item?.price?.supplierSalePrice)/1000)}{"k"}
+                            </span>
                         }
                         <LazyLoad>
-                            <img src={item.faceProduct} alt={item.name} />
+                            <img onLoad={onload} src={loaded ? item?.images[0]?.url : imgDefault} alt={item?.name} />
                         </LazyLoad>
                     </div>
                     <div className="card-name">
-                        <span className="card-name-content">{item.name}</span>
-                        <span className="card-name-tooltip">{item.name}</span>
+                        <span className="card-name-content">{item?.name}</span>
+                        <span className="card-name-tooltip">{item?.name}</span>
                     </div>
                     <div className="card-price">
-                        <span className="card-price-main">{FormatMoney(item.price - item.promotion)}đ</span>
-                        {item.promotion > 0 && <span className="card-price-sub">{FormatMoney(item.price)}đ</span>}
+                        <span className="card-price-main">{FormatMoney(item?.price?.sellPrice)}đ</span>
+                        {item?.price?.sellPrice !== item?.price?.supplierSalePrice && <span className="card-price-sub">{FormatMoney(item?.price?.supplierSalePrice)}đ</span>}
                     </div>
                 </div>
             </Link>

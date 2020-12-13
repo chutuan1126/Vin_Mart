@@ -1,8 +1,12 @@
 import * as types from './Product.type';
 
 const innitialState = {
-    Products: [],
-    SingleProduct: null
+    Products: { all: [] },
+    SingleProduct: {
+        data: null,
+        total: 0
+    },
+    DetailProduct: null
 }
 
 export default function productReducer(state = innitialState, action) {
@@ -10,22 +14,22 @@ export default function productReducer(state = innitialState, action) {
         case types.GET_DATA_HOME:
             return {
                 ...state,
-                Products: action.data
+                Products: { ...state.Products, ...action.data, all: [...state.Products.all, ...action.all] }
             };
         case types.GET_DATA_OF_TYPE:
             return {
                 ...state,
-                Products: action.data
+                SingleProduct: { data: action.data, total: action.total }
             }
         case types.GET_DATA_SINGLE_PRODUCT:
             return {
                 ...state,
-                SingleProduct: action.data
+                DetailProduct: action.data
             }
         case types.REFRESH_DATA:
             return {
                 ...state,
-                Products: []
+                Products: { all: [] },
             }
         default: return state;
     }
