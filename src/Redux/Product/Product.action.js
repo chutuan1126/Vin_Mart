@@ -2,7 +2,7 @@ import * as types from './Product.type';
 import axios from 'axios';
 
 export const getDataHome = (params) => async dispatch => {
-    const api = "http://localhost:8080/product/getproduct";
+    const api = "https://shop-server-demo.herokuapp.com/product/getproduct";
 
     const res = await axios.post(api, { ...params });
 
@@ -22,7 +22,7 @@ export const getDataHome = (params) => async dispatch => {
 }
 
 export const getDataOfType = ({ pageNumber, code }) => async dispatch => {
-    const api = "http://localhost:8080/product/getproduct";
+    const api = "https://shop-server-demo.herokuapp.com/product/getproduct";
 
     const res = await axios.post(api, { pageNumber, code, size: 20 });
 
@@ -42,7 +42,7 @@ export const getDataOfType = ({ pageNumber, code }) => async dispatch => {
 }
 
 export const getSingleProduct = id => async dispatch => {
-    const api = `http://localhost:8080/product/singleproduct`;
+    const api = `https://shop-server-demo.herokuapp.com/product/singleproduct`;
     const res = await axios.post(api, { id });
 
     try {

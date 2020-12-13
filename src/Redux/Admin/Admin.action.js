@@ -2,7 +2,7 @@ import * as types from './Admin.type';
 import axios from 'axios';
 
 export const getAdminProducts = ({ token }) => async dispatch => {
-    const api = `http://localhost:8080/product/getproducts`;
+    const api = `https://shop-server-demo.herokuapp.com/product/getproducts`;
 
     const res = await axios.post(api, { token });
 
@@ -21,7 +21,7 @@ export const getAdminProducts = ({ token }) => async dispatch => {
 }
 
 export const addProduct = ({ name, proid, price, faceProduct, promotion, token }) => async dispatch => {
-    const api = `http://localhost:8080/product/addproduct`;
+    const api = `https://shop-server-demo.herokuapp.com/product/addproduct`;
 
     const res = await axios.post(api, { name, proid, price, faceProduct, promotion, token });
 
@@ -40,7 +40,7 @@ export const addProduct = ({ name, proid, price, faceProduct, promotion, token }
 }
 
 export const removeProduct = ({ id, token }) => async dispatch => {
-    const api = `http://localhost:8080/product/deleteproduct`;
+    const api = `https://shop-server-demo.herokuapp.com/product/deleteproduct`;
 
     const res = await axios.post(api, { id, token });
 
@@ -59,7 +59,7 @@ export const removeProduct = ({ id, token }) => async dispatch => {
 }
 
 export const updateProduct = ({ id, name, proid, price, faceProduct, promotion, token }) => async dispatch => {
-    const api = `http://localhost:8080/product/editproduct`;
+    const api = `https://shop-server-demo.herokuapp.com/product/editproduct`;
 
     const res = await axios.post(api, { id, name, proid, price, faceProduct, promotion, token });
 

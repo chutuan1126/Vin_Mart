@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export const getCart = () => async dispatch => {
 
-    const api = `http://localhost:8080/cart/getcart`;
+    const api = `https://shop-server-demo.herokuapp.com/cart/getcart`;
 
     const res = await axios.post(api, {});
 
@@ -23,7 +23,7 @@ export const getCart = () => async dispatch => {
 
 export const addToCart = item => async dispatch => {
 
-    // const api = `http://localhost:8080/cart/addtocart`;
+    // const api = `https://shop-server-demo.herokuapp.com/cart/addtocart`;
 
     // const res = await axios.post(api, { id: item });
 
@@ -43,7 +43,7 @@ export const addToCart = item => async dispatch => {
 
 export const removeFromCart = idProduct => async dispatch => {
 
-    // const api = `http://localhost:8080/cart/removecart`;
+    // const api = `https://shop-server-demo.herokuapp.com/cart/removecart`;
 
     // const res = await axios.post(api, { id: idProduct });
 
@@ -62,7 +62,7 @@ export const removeFromCart = idProduct => async dispatch => {
 }
 
 export const updateCart = (idProduct, quantity) => async dispatch => {
-    // const api = `http://localhost:8080/cart/updatecart`;
+    // const api = `https://shop-server-demo.herokuapp.com/cart/updatecart`;
 
     // const res = await axios.post(api, { id: idProduct, quantity: quantity });
 

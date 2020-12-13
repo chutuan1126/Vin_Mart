@@ -2,7 +2,7 @@ import * as types from './Login.type';
 import axios from 'axios';
 
 export const LoginAdmin = ({ email, password }) => async dispatch => {
-    const api = "http://localhost:8080/auth/login";
+    const api = "https://shop-server-demo.herokuapp.com/auth/login";
 
     const res = await axios.post(api, { email, password });
 
@@ -23,7 +23,7 @@ export const LoginAdmin = ({ email, password }) => async dispatch => {
 }
 
 export const signUpAdmin = ({ useName, email, password, confirmPassword }) => async dispatch => {
-    const api = "http://localhost:8080/auth/signup";
+    const api = "https://shop-server-demo.herokuapp.com/auth/signup";
 
     const res = await axios.post(api, { useName, email, password, confirmPassword });
 
@@ -42,7 +42,7 @@ export const signUpAdmin = ({ useName, email, password, confirmPassword }) => as
 }
 
 export const logoutAdmin = () => async dispatch => {
-    const api = "http://localhost:8080/auth/logout";
+    const api = "https://shop-server-demo.herokuapp.com/auth/logout";
 
     const res = await axios.post(api, {});
 
