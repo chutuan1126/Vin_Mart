@@ -60,7 +60,7 @@ const Bound = styled.footer`
         &_info {
             display: flex;
             margin: auto;
-            width: 1180px;
+            max-width: 1180px;
             height: 260px;
             padding: 15px 0;
             &_blogcty {
@@ -105,10 +105,10 @@ const Bound = styled.footer`
                 }
             }
         }
-        .footer_main_address {
+        &_address {
             display: flex;
             margin: auto;
-            width: 1180px;
+            max-width: 1180px;
             height: calc(100% - 260px);
             padding-top: 15px;
             padding-bottom: 20px;
@@ -194,11 +194,11 @@ function Footer() {
                 <div className="footer_main_address">
                     <div className="footer_main_address_section">
                         <h3>Trụ sở chính:</h3>
-                        <span>Tầng 5, Mplaza SaiGon, 39 Lê Duẩn, Phường Bến Nghé, Quận 1, Thành Phố Hồ Chí Minh, Việt Nam.</span>
+                        <span>Tầng 5, Mplaza SaiGon, 39 Lê Duẩn, Phường Bến Nghé, Quận 1, Thành Phố Hồ Chí Minh.</span>
                     </div>
                     <div className="footer_main_address_section">
                         <h3>Địa chỉ giao dịch Tp.HCM:</h3>
-                        <span>Tầng 5, Mplaza SaiGon, 39 Lê Duẩn, Phường Bến Nghé, Quận 1, Thành Phố Hồ Chí Minh, Việt Nam.</span>
+                        <span>Tầng 5, Mplaza SaiGon, 39 Lê Duẩn, Phường Bến Nghé, Quận 1, Thành Phố Hồ Chí Minh.</span>
                     </div>
                     <div className="footer_main_address_section">
                         <h3>Địa chỉ giao dịch Hà Nội:</h3>

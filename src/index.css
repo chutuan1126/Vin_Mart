@@ -19,3 +19,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@media screen and (max-width: 1180px) {
+  .footer_main {
+    padding: 0 10px;
+  }
+}

@@ -5,7 +5,9 @@ import MainContainer from './UI/Main/MainContainer';
 
 const App = () => {
   return (
-    <MainContainer />
+    <div style={{ width: '100%', minWidth: '1180px' }}>
+      <MainContainer />
+    </div>
   )
 }
 

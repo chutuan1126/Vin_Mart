@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import { isBrowser, isMobile } from "react-device-detect";
 
 //Auth
 import { Auth } from '../../Middleware/Auth.Middleware';
@@ -31,27 +32,27 @@ const categorys = [
     {
         id: 'Spice',
         title: 'Dầu ăn - Gia vị - Đồ khô',
-        code: [1858,1843,1821],
+        code: [1858, 1843, 1821],
     },
     {
         id: 'DryFood',
         title: 'Thực phẩm đông lạnh',
-        code: [2920,2918,1844],
+        code: [2920, 2918, 1844],
     },
     {
         id: 'Milk',
         title: 'Đồ uống - Giải khát',
-        code: [2925,2924,2923,2922,1897,1837],
+        code: [2925, 2924, 2923, 2922, 1897, 1837],
     },
     {
         id: 'Drinks',
         title: 'Đồ uống - Giải khát',
-        code: [1899,1898,1896,1895,1852],
+        code: [1899, 1898, 1896, 1895, 1852],
     },
     {
         id: 'bimbim',
         title: 'Bánh kẹo - Đồ ăn vặt',
-        code: [1839,1819,1818,1817,1816,1815],
+        code: [1839, 1819, 1818, 1817, 1816, 1815],
     },
     {
         id: 'chemical',
@@ -118,6 +119,13 @@ const RouteWithLayout = ({ component, ...rest }) => {
 };
 
 function MainContainer() {
+    if (isBrowser) {
+        console.log('This content is unavailable on Browser');
+    }
+    if (isMobile) {
+        console.log('This content is unavailable on Mobile');
+        // return <div>This content is unavailable on Mobile</div>
+    }
     return (
         <Fragment>
             <ScrollToTop />
