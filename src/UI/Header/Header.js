@@ -39,7 +39,7 @@ const Bound = styled.div`
         background-color: #ed1c24;
         transition: .2s ease-in-out;
         &_top {
-            width: 1180px;
+            max-width: 1180px;
             height: 100%;
             margin: auto;
             display: flex;
@@ -55,8 +55,11 @@ const Bound = styled.div`
                 }
             }
             &_search {
+                padding: 0 20px;
                 width: 484px;
                 height: 40px;
+                min-width: 250px;
+                max-width: 484px;
                 input {
                     border: 0;
                     width: 100%;
@@ -76,7 +79,8 @@ const Bound = styled.div`
             }
             &_cate_sub {
                 display: flex;
-                width: 150px;
+                min-width: 120px;
+                max-width: 150px;
                 height: 40px;
                 cursor: pointer;
                 &>img {
@@ -124,6 +128,7 @@ const Bound = styled.div`
             &_cate_sub.sub_two {
                 position: relative;
                 padding: 10px 0;
+                min-width: 150px;
                 box-sizing: content-box;
                 &:hover .box_cart {
                     display: block;
