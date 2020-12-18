@@ -14,8 +14,10 @@ const persistConfig = {
     blacklist: ['ProductReducer', 'LoginReducer']
 }
 
+console.log(process.env.NODE_ENV);
+
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-const midleware = [thunk, logger];
+const midleware = process.env.NODE_ENV !== 'production' ? [thunk, logger] : [thunk];
 
 export const store = createStore(persistedReducer, applyMiddleware(...midleware));
 export const persistor = persistStore(store);

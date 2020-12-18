@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect, memo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -356,26 +356,28 @@ function Header({ categorys }) {
         setCount(CartReducer.Cart.length);
     }, [CartReducer]);
 
+    const scrollHandler = useCallback(() => {
+        setToggleShow(false);
+        if (window.scrollY >= 1) {
+            document.getElementById('header').style.position = "sticky";
+        }
+        if (window.scrollY === 0) {
+            document.getElementById('header').style.position = "static";
+        }
+        if (window.scrollY >= 475) {
+            document.getElementById('img').style.height = "38px";
+            document.getElementById('navId').style.height = "50px";
+        }
+        if (window.scrollY <= 475) {
+            document.getElementById('img').style.height = "58px";
+            document.getElementById('navId').style.height = "80px";
+        }
+    }, []);
 
     useEffect(() => {
-        window.addEventListener('scroll', () => {
-            setToggleShow(false);
-            if (window.scrollY >= 1) {
-                document.getElementById('header').style.position = "sticky";
-            }
-            if (window.scrollY === 0) {
-                document.getElementById('header').style.position = "static";
-            }
-            if (window.scrollY >= 475) {
-                document.getElementById('img').style.height = "38px";
-                document.getElementById('navId').style.height = "50px";
-            }
-            if (window.scrollY <= 475) {
-                document.getElementById('img').style.height = "58px";
-                document.getElementById('navId').style.height = "80px";
-            }
-        }, false);
-    }, []);
+        window.addEventListener('scroll', scrollHandler, false);
+        return () => window.removeEventListener('scroll', scrollHandler, false);
+    }, [scrollHandler]);
 
     return (
         <Bound id="header">
